@@ -1,9 +1,12 @@
 import os
+from random import random
+
 from flask import current_app as app
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 
+from app.models.pictures import Pictures
 from app.models.pins import Pins
 
 blueprint = Blueprint('pin', __name__, url_prefix='/pin')
@@ -19,10 +22,14 @@ def create():
     title = request.form['title']
     description = request.form['description']
     f = request.files['file']
+    filename = None
     if f is not None:
-        f.save(os.path.join(app.instance_path, 'images', secure_filename(f.filename)))
-
-    Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description)
+        value = random(100000000)
+        f.save(os.path.join(app.instance_path, 'images', secure_filename(str(user_id) + str(value))))
+        filename = app.instance_path + '/images/' + str(user_id) + str(value)
+    pin = Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description)
+    if filename is not None:
+        Pictures.create(url=filename, pin=pin.id)
 
     return jsonify({'success': True, 'message': 'Your pin was created'}), 401
 
