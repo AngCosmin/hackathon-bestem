@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
+
 from app.models.events import Events
 from app.models.pins import Pins
 
@@ -6,6 +8,7 @@ blueprint = Blueprint('event', __name__, url_prefix='/event')
 
 
 @blueprint.route('/create', methods=['POST'])
+@jwt_required
 def create():
     pin_id = request.form['pid_id']
     time_start = request.form['time_start']
@@ -19,18 +22,18 @@ def create():
 
 
 @blueprint.route('/invite', methods=['POST'])
+@jwt_required
 def invite():
-
-
     return jsonify({'success': True, 'message': 'Your event was created'}), 200
 
 
 @blueprint.route('/all', methods=['GET'])
+@jwt_required
 def all():
     allEvents = []
     for event in Events.select():
-        dict = {'id': event.id, 'title': event.title, 'description': event.description, 'start': str(event.time_start), 'end': str(event.time_end)}
+        dict = {'id': event.id, 'title': event.title, 'description': event.description, 'start': str(event.time_start),
+                'end': str(event.time_end)}
         allEvents.append(dict)
 
     return jsonify({'success': True, 'message': allEvents}), 200
-

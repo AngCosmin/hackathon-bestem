@@ -27,9 +27,6 @@ export default {
 	},
 	data() {
 		return {
-			profilePicture: {
-				blank: true, blankColor: '#777', width: 75, height: 75, class: 'm1', src: 'https://i.imgur.com/JRoOWKy.jpg'
-			}
 		}
 	},
 	watch: {

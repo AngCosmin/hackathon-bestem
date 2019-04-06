@@ -15,3 +15,4 @@ class Users(BaseModel):
     points = IntegerField(default=0)
     places_reported = IntegerField(default=0)
     places_cleaned = IntegerField(default=0)
+    status = IntegerField(default=0)

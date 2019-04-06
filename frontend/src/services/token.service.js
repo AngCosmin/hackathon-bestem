@@ -2,7 +2,7 @@ import axios from './api.service'
 
 const canMakeRequest = async function () {
     try {
-        await axios.post('/restaurant/login')
+        await axios.post('/auth/login')
         return true
     }
     catch(e) {

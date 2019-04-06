@@ -14,7 +14,7 @@
 						@click="onMarkerClicked(pin.id)"/>
 			
 			<GmapMarker v-if="newPin.show" :position="newPin.position" @drag="onNewPinDrag" :draggable="true" :icon="newPin.icon">
-				<gmap-info-window :opened="true">Place me somewhere</gmap-info-window>
+				<gmap-info-window :opened="true">Drag me somewhere</gmap-info-window>
 			</GmapMarker>
 		</GmapMap>
 
@@ -53,7 +53,8 @@
 
 				<template v-if="pinDetails.type === 1">
 					<b-button class="mt-3" variant="primary" block>Create event</b-button>
-					<b-button class="mt-3" variant="primary" block @click="onMarkAsCleanedPressed">Mark as cleaned</b-button>
+					<b-button v-if="pinDetails.status === 0" class="mt-3" variant="primary" block @click="onMarkAsCleanedPressed">Mark as cleaned</b-button>
+					<span v-else-if="pinDetails.status === 1" class="text-warning"><hr>Already cleaned</span>
 				</template>
 				<template v-else>
 					<b-button class="mt-3" variant="primary" block>Call</b-button>
@@ -91,6 +92,7 @@ export default {
 	},
 	data() {
 		return {
+			selectedPinId: null,
 			mapOptions: {
 				fullscreenControl: false,
 				streetViewControl: false,
@@ -119,6 +121,7 @@ export default {
 				pictures: [],
 				phone: '',
 				email: '',
+				status: 0,
 			},
 			markAsCleaned: {
 				photo: null,
@@ -133,13 +136,26 @@ export default {
 	methods: {
 		getPins() {
 			this.mapForCleaningPins = []
-			this.mapForCleaningPins = []
+			this.mapRecyclePins = []
 
 			axios.get('/pin/all').then(response => {
 				let pins = response.data.message
 
 				for (let pin of pins) {
 					if (pin.type === 1) {
+						// Gunoi
+
+						let url = ''
+						if (pin.status === 0) {
+							// Not cleaned
+							url = 'https://i.imgur.com/uKscO2W.png'
+
+						}
+						else if (pin.status === 1) {
+							// Cleaned
+							url = 'https://i.imgur.com/7HGc2iB.png'
+						}
+
 						this.mapForCleaningPins.push({
 							id: pin.id,
 							position: {
@@ -147,12 +163,13 @@ export default {
 								lng: pin.position.lng
 							},
 							icon: {
-								url: 'https://i.imgur.com/uKscO2W.png'
+								url: url
 							}
 						})
 					}
 					else {
-						this.mapForCleaningPins.push({
+						// Companie 
+						this.mapRecyclePins.push({
 							id: pin.id,
 							position: {
 								lat: pin.position.lat,
@@ -172,11 +189,13 @@ export default {
 		},
 		onMarkerClicked(pinId) {
 			this.resetPinDetailsData()
+			this.selectedPinId = pinId
 
 			axios.get('/pin/details', { params: { pin_id: pinId } }).then(response => {
 				let result = response.data.message
 
 				if (result.type === 2) {
+					// Company
 					this.pinDetails.title = result.name
 					this.pinDetails.description = result.info
 					this.pinDetails.phone = result.phone
@@ -184,10 +203,12 @@ export default {
 					this.pinDetails.type = result.type
 				}
 				else {
+					// User
 					this.pinDetails.title = result.title
 					this.pinDetails.description = result.description
 					this.pinDetails.type = result.type
 					this.pinDetails.pictures = result.pictures
+					this.pinDetails.status = result.status
 				}
 				
 				this.$refs['modal-details'].show()
@@ -200,8 +221,9 @@ export default {
 		onMarkAsCleanedConfirmedPressed() {
 			let formData = new FormData()
 			formData.append('file', this.markAsCleaned.photo)
+			formData.append('pin_id', this.selectedPinId)
 
-			axios.post("/pin/mark_as_clean", formData, { 
+			axios.post("/pin/mark_cleaned", formData, { 
 				headers: { 
 					'Content-Type': 'multipart/form-data',
 					'Authorization': 'Bearer 123'
@@ -266,6 +288,7 @@ export default {
 				pictures: [],
 				phone: '',
 				email: '',
+				status: 0,
 			}
 		}
 	}
