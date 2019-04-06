@@ -13,5 +13,5 @@ class Users(BaseModel):
     info = TextField()
     avatar = CharField()
     points = IntegerField(default=0)
-    placed_reported = IntegerField(default=0)
-    placed_cleaned = IntegerField(default=0)
+    places_reported = IntegerField(default=0)
+    places_cleaned = IntegerField(default=0)
