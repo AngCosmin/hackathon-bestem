@@ -3,13 +3,14 @@ from random import randint
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from imgurpython import ImgurClient
 
 from app.models.pictures import Pictures
 from app.models.pins import Pins
 from app.models.users import Users
 
 blueprint = Blueprint('pin', __name__, url_prefix='/pin')
-
+imgur_client = ImgurClient('980b05841441b73', '3e90da14519e42a635835cdd14028c144cef9e5a')
 
 @blueprint.route('/create', methods=['POST'])
 # @jwt_required
@@ -23,6 +24,7 @@ def create():
     f = None
     if len(request.files) > 0:
         f = request.files['file']
+
     filename = None
     if f is not None:
         value = randint(1, 100000000)
@@ -34,7 +36,8 @@ def create():
 
     pin = Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description, type=1)
     if filename is not None:
-        Pictures.create(url=filename, pin=pin.id)
+        image = imgur_client.upload_from_path(filename)
+        Pictures.create(url=image['link'], pin=pin.id)
 
     return jsonify({'success': True, 'message': 'Your pin was created'}), 200
 
@@ -47,8 +50,19 @@ def details():
     pin = Pins.get_or_none(Pins.id == id)
     #user
     if pin.type == 1:
-        mydict = {'title': pin.title, 'description': pin.description,
-                  'created_at': pin.created_at, 'type': 1}
+        mydict = {
+            'title': pin.title,
+            'description': pin.description,
+            'created_at': pin.created_at,
+            'type': 1,
+            'pictures': [],
+        }
+
+        pictures = Pictures.select().where(Pictures.pin == id)
+
+        for picture in pictures:
+            mydict['pictures'].append(picture.url)
+
     # company
     else:
         user_id = pin.user

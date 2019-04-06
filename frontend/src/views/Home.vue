@@ -18,7 +18,25 @@
 			</GmapMarker>
 		</GmapMap>
 
-		<b-modal ref="my-modal" hide-footer title="Create new spot to clean">
+		<b-modal ref="modal-create" hide-footer title="Create new spot to clean">
+			<div class="d-block text-center">
+				<div class="form-group">
+					<input v-model="newPin.form.title" type="text" class="form-control" placeholder="Title">
+				</div>
+				<div class="form-group">
+					<textarea v-model="newPin.form.description" class="form-control" placeholder="Description"></textarea>
+				</div>
+				<div class="form-group">
+					<label>Select photo before cleaning</label>
+					<b-form-file v-model="newPin.form.photo" drop-placeholder="Drop file here..."></b-form-file>
+				</div>
+
+				<b-button type="submit" variant="primary" @click="onSaveNewSpot">Save</b-button>
+			</div>
+		</b-modal>
+
+
+		<b-modal ref="modal-details" hide-footer :title="pinDetails.title">
 			<div class="d-block text-center">
 				<div class="form-group">
 					<input v-model="newPin.form.title" type="text" class="form-control" placeholder="Title">
@@ -57,16 +75,8 @@ export default {
 				fullscreenControl: false,
 				streetViewControl: false,
 			},
-			mapRecyclePins: [
-				{ id: 1, position: { lat: 44.429147, lng: 26.026514 }, icon: { url: 'https://i.imgur.com/wOgSiQU.png' } },
-				{ id: 2, position: { lat: 44.417551, lng: 26.156501 }, icon: { url: 'https://i.imgur.com/wOgSiQU.png' } },
-				{ id: 3, position: { lat: 44.470105, lng: 26.091612 }, icon: { url: 'https://i.imgur.com/wOgSiQU.png' } },
-			],
-			mapForCleaningPins: [
-				{ id: 4, position: { lat: 44.435951, lng: 26.099595 }, icon: { url: 'https://i.imgur.com/uKscO2W.png' } },
-				{ id: 5, position: { lat: 44.402239, lng: 26.116448 }, icon: { url: 'https://i.imgur.com/uKscO2W.png' } },
-				{ id: 6, position: { lat: 44.392550, lng: 26.172245 }, icon: { url: 'https://i.imgur.com/uKscO2W.png' } },
-			],
+			mapRecyclePins: [],
+			mapForCleaningPins: [],
 			newPin: {
 				show: false,
 				position: {
@@ -81,14 +91,54 @@ export default {
 					description: '',
 					photo: null,
 				}
+			},
+			pinDetails: {
+				type: '',
+				title: '',
+				description: '',
 			}
 		};
 	},
 	watch: {
 	},
+	created() {
+		this.getPins()
+	},
 	methods: {
-		onMarkerClicked() {
-			console.log('asd')
+		getPins() {
+			axios.get('/pin/all').then(response => {
+				let pins = response.data.message
+
+				for (let pin of pins) {
+					if (pin.type === 1) {
+						this.mapForCleaningPins.push({
+							id: pin.id,
+							position: {
+								lat: pin.position.lat,
+								lng: pin.position.lng
+							},
+							icon: {
+								url: 'https://i.imgur.com/uKscO2W.png'
+							}
+						})
+					}
+					else {
+						this.mapForCleaningPins.push({
+							id: pin.id,
+							position: {
+								lat: pin.position.lat,
+								lng: pin.position.lng
+							},
+							icon: {
+								url: 'https://i.imgur.com/wOgSiQU.png'
+							}
+						})
+					}
+				}
+			})
+		},
+		onMarkerClicked(pinId) {
+
 		},
 		onSaveNewSpot() {
 			let formData = new FormData()
@@ -117,7 +167,7 @@ export default {
 		onPlacePressed(e) {
 			this.makeAnimation(e)
 
-			this.$refs['my-modal'].show()
+			this.$refs['modal-create'].show()
 		},
 		makeAnimation(e) {
 			e.preventDefault
