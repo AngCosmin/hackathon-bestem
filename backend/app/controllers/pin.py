@@ -20,7 +20,9 @@ def create():
     lng = request.form['lng']
     title = request.form['title']
     description = request.form['description']
-    f = request.files['file']
+    f = None
+    if len(request.files) > 0:
+        f = request.files['file']
     filename = None
     if f is not None:
         value = randint(1, 100000000)
@@ -28,14 +30,13 @@ def create():
         name = '{}-{}'.format(user_id, value)
         extension = f.filename.split('.')[1]
         filename = '{}/{}.{}'.format(path, name, extension)
-
         f.save(os.path.join(filename))
 
     pin = Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description, type=1)
     if filename is not None:
         Pictures.create(url=filename, pin=pin.id)
 
-    return jsonify({'success': True, 'message': 'Your pin was created'}), 401
+    return jsonify({'success': True, 'message': 'Your pin was created'}), 200
 
 
 
@@ -54,7 +55,7 @@ def details():
         user = Users.get_or_none(Users.id == user_id)
         mydict = {'type': 2, 'email': user.email, 'info': user.info, 'phone': user.phone}
 
-    return jsonify({'success': True, 'message': mydict}), 401
+    return jsonify({'success': True, 'message': mydict}), 200
 
 
 
@@ -68,7 +69,7 @@ def my_pins():
     for pin in Pins.select().where(Pins.user == user_id):
         my_pins.append(pin.created_at)
 
-    return jsonify({'success': True, 'message': my_pins}), 401
+    return jsonify({'success': True, 'message': my_pins}), 200
 
 
 
@@ -79,7 +80,10 @@ def allPins():
         dict = {'id': pin.id, 'position': {'lat': pin.lat, 'lng': pin.lng}, 'type': pin.type}
         allPins.append(dict)
 
-    return jsonify({'success': True, 'message': allPins}), 401
+    return jsonify({'success': True, 'message': allPins}), 200
+
+
+
 
 
 
