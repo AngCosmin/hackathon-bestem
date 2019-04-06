@@ -12,6 +12,7 @@ from app.models.users import Users
 blueprint = Blueprint('pin', __name__, url_prefix='/pin')
 imgur_client = ImgurClient('980b05841441b73', '3e90da14519e42a635835cdd14028c144cef9e5a')
 
+
 @blueprint.route('/create', methods=['POST'])
 # @jwt_required
 def create():
@@ -39,8 +40,11 @@ def create():
         image = imgur_client.upload_from_path(filename)
         Pictures.create(url=image['link'], pin=pin.id)
 
-    return jsonify({'success': True, 'message': 'Your pin was created'}), 200
+    user = Users.get_or_none(Users.id == user_id)
+    query = Users.update(places_reported=(user.places_reported + 1)).where(Users.id == user_id)
+    query.execute()
 
+    return jsonify({'success': True, 'message': 'Your pin was created'}), 200
 
 
 @blueprint.route('/details', methods=['GET'])

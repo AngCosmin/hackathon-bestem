@@ -1,5 +1,5 @@
 import datetime
-from peewee import CharField, ForeignKeyField, DateTimeField, TextField
+from peewee import CharField, ForeignKeyField, DateTimeField, TextField, DoubleField
 from app.models.base import BaseModel
 from app.models.pins import Pins
 
@@ -10,3 +10,5 @@ class Events(BaseModel):
     description = TextField()
     time_start = DateTimeField(default=datetime.datetime.now)
     time_end = DateTimeField(default=datetime.datetime.now)
+    lat = DoubleField()
+    lng = DoubleField()
