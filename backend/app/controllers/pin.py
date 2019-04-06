@@ -67,7 +67,7 @@ def details():
     else:
         user_id = pin.user
         user = Users.get_or_none(Users.id == user_id)
-        mydict = {'type': 2, 'email': user.email, 'info': user.info, 'phone': user.phone}
+        mydict = {'type': 2, 'name': user.name, 'email': user.email, 'info': user.info, 'phone': user.phone}
 
     return jsonify({'success': True, 'message': mydict}), 200
 

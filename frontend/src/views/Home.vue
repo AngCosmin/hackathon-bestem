@@ -5,13 +5,13 @@
 						:position="pin.position" 
 						:clickable="true" 
 						:icon="pin.icon"
-						@click="onMarkerClicked"/>
+						@click="onMarkerClicked(pin.id)"/>
 
 			<GmapMarker v-for="pin in mapForCleaningPins" :key="pin.id" 
 						:position="pin.position" 
 						:clickable="true" 
 						:icon="pin.icon"
-						@click="onMarkerClicked"/>
+						@click="onMarkerClicked(pin.id)"/>
 			
 			<GmapMarker v-if="newPin.show" :position="newPin.position" :draggable="true" :icon="newPin.icon">
 				<gmap-info-window :opened="true">Place me somewhere</gmap-info-window>
@@ -38,18 +38,12 @@
 
 		<b-modal ref="modal-details" hide-footer :title="pinDetails.title">
 			<div class="d-block text-center">
-				<div class="form-group">
-					<input v-model="newPin.form.title" type="text" class="form-control" placeholder="Title">
-				</div>
-				<div class="form-group">
-					<textarea v-model="newPin.form.description" class="form-control" placeholder="Description"></textarea>
-				</div>
-				<div class="form-group">
-					<label>Select photo before cleaning</label>
-					<b-form-file v-model="newPin.form.photo" drop-placeholder="Drop file here..."></b-form-file>
-				</div>
+				{{ pinDetails.description }}
 
-				<b-button type="submit" variant="primary" @click="onSaveNewSpot">Save</b-button>
+				<template v-if="pinDetails.type === 2">
+					<b-button class="mt-3" variant="primary" block>Call</b-button>
+					<b-button class="mt-3" variant="primary" block>Email</b-button>
+				</template>
 			</div>
 		</b-modal>
 
@@ -96,6 +90,9 @@ export default {
 				type: '',
 				title: '',
 				description: '',
+				pictures: [],
+				phone: '',
+				email: '',
 			}
 		};
 	},
@@ -138,7 +135,24 @@ export default {
 			})
 		},
 		onMarkerClicked(pinId) {
+			axios.get('/pin/details', { params: { pin_id: pinId } }).then(response => {
+				let result = response.data.message
 
+				if (result.type === 2) {
+					this.pinDetails.title = result.name
+					this.pinDetails.description = result.info
+					this.pinDetails.phone = result.phone
+					this.pinDetails.emai = result.email
+				}
+				else {
+					this.pinDetails.title = result.title
+					this.pinDetails.description = result.description
+					this.pinDetails.type = result.type
+					this.pinDetails.pictures = result.pictures
+				}
+				
+				this.$refs['modal-details'].show()
+			})
 		},
 		onSaveNewSpot() {
 			let formData = new FormData()
