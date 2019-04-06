@@ -2,9 +2,10 @@
   <div id="app">
     <div>
       <b-navbar toggleable="lg" type="dark">
+        <b-navbar-toggle target="nav_collapse" />
+
         <b-navbar-brand href="#" class="m-l-3">CityGreen</b-navbar-brand>
 
-        <b-navbar-toggle target="nav_collapse" />
 
         <b-collapse is-nav id="nav_collapse">
           <b-navbar-nav>

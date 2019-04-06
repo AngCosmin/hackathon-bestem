@@ -22,6 +22,12 @@ let routes = [
         name: 'login',
     },
     {
+        path: '/register',
+        component: loadView('Register'),
+        meta: { requiresAuth: false },
+        name: 'register',
+    },
+    {
         path: '/map',
         component: loadView('Map'),
         meta: { requiresAuth: true },
@@ -46,19 +52,18 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-    let email = localStorage.getItem('email')
-    let password = localStorage.getItem('password')
+    let token = localStorage.getItem('token')
     let requireAuth = to.matched.some(record => record.meta.requiresAuth)
 
-    if (to.path === '/login' && email) {
-        next('/products') 
+    if (to.path === '/login' && token) {
+        next('/map') 
     }
 
     if (!requireAuth) {
         next()
     }
     else {
-        if (email) { 
+        if (token) { 
             next() 
         }
         else {
