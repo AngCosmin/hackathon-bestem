@@ -2,7 +2,7 @@
   <div id="app">
     <div>
       <b-navbar toggleable="lg" type="dark">
-        <b-navbar-brand href="#" class="m-l-3">Aplicatia Noastra</b-navbar-brand>
+        <b-navbar-brand href="#" class="m-l-3">CityGreen</b-navbar-brand>
 
         <b-navbar-toggle target="nav_collapse" />
 

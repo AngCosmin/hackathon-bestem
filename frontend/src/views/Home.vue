@@ -13,7 +13,7 @@
 						:icon="pin.icon"
 						@click="onMarkerClicked(pin.id)"/>
 			
-			<GmapMarker v-if="newPin.show" :position="newPin.position" :draggable="true" :icon="newPin.icon">
+			<GmapMarker v-if="newPin.show" :position="newPin.position" @drag="onNewPinDrag" :draggable="true" :icon="newPin.icon">
 				<gmap-info-window :opened="true">Place me somewhere</gmap-info-window>
 			</GmapMarker>
 		</GmapMap>
@@ -103,6 +103,9 @@ export default {
 	},
 	methods: {
 		getPins() {
+			this.mapForCleaningPins = []
+			this.mapForCleaningPins = []
+
 			axios.get('/pin/all').then(response => {
 				let pins = response.data.message
 
@@ -134,6 +137,10 @@ export default {
 				}
 			})
 		},
+		onNewPinDrag(location) {
+			this.newPin.position.lat = location.latLng.lat()
+			this.newPin.position.lng = location.latLng.lng()
+		},
 		onMarkerClicked(pinId) {
 			axios.get('/pin/details', { params: { pin_id: pinId } }).then(response => {
 				let result = response.data.message
@@ -143,6 +150,7 @@ export default {
 					this.pinDetails.description = result.info
 					this.pinDetails.phone = result.phone
 					this.pinDetails.emai = result.email
+					this.pinDetails.type = result.type
 				}
 				else {
 					this.pinDetails.title = result.title
@@ -168,7 +176,12 @@ export default {
 					'Authorization': 'Bearer 123'
 				}
 			}).then(response => {
-				console.log(response)
+				this.getPins()
+				this.newPin.show = false
+				this.newPin.form.title = ''
+				this.newPin.form.description = '',
+				this.newPin.form.photo = null,
+				this.$refs['modal-create'].hide()
 			}).catch(error => {
 				console.error(error);
 			});
