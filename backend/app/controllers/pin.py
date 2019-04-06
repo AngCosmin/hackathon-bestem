@@ -10,9 +10,10 @@ blueprint = Blueprint('pin', __name__, url_prefix='/pin')
 
 
 @blueprint.route('/create', methods=['POST'])
-@jwt_required
+# @jwt_required
 def create():
-    user_id = get_jwt_identity()
+    # user_id = get_jwt_identity()
+    user_id = 1
     lat = request.form['lat']
     lng = request.form['lng']
     title = request.form['title']

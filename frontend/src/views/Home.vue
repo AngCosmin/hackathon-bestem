@@ -31,6 +31,8 @@
 					<b-form-file v-model="newPin.form.photo" drop-placeholder="Drop file here..."></b-form-file>
 				</div>
 
+				{{ newPin.form.photo }}
+
 				<b-button type="submit" variant="primary" @click="onSaveNewSpot">Save</b-button>
 			</div>
 		</b-modal>
@@ -42,7 +44,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import axios from "axios";
+import axios from '@/services/api.service'
 import router from "@/router";
 
 export default {
@@ -84,17 +86,25 @@ export default {
 			}
 		};
 	},
+	watch: {
+	},
 	methods: {
 		onMarkerClicked() {
 			console.log('asd')
 		},
 		onSaveNewSpot() {
-			axios.post("/pin/create", {
-				title: this.newPin.form.title,
-				description: this.newPin.form.description,
-				lat: this.newPin.position.lat,
-				lng: this.newPin.position.lng,
-				file: this.newPin.form.photo,
+			let formData = new FormData()
+			formData.append('title', this.newPin.form.title)
+			formData.append('description', this.newPin.form.description)
+			formData.append('lat', this.newPin.position.lat)
+			formData.append('lng', this.newPin.position.lng)
+			formData.append('file', this.newPin.form.photo)
+
+			axios.post("/pin/create", formData, { 
+				headers: { 
+					'Content-Type': 'multipart/form-data',
+					'Authorization': 'Bearer 123'
+				}
 			}).then(response => {
 				console.log(response)
 			}).catch(error => {
