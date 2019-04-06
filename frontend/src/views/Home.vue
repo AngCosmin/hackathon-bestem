@@ -1,6 +1,6 @@
 <template>
   	<div class="container">
-		<h1> Welcome to the City Green! </h1>
+		<h1> Welcome to the ResQNature! </h1>
 		<h2> We'll handle it from here. </h2>
 
 		<p> Our application facilitates the process of marking and cleaning the polutted 

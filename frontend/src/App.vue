@@ -4,7 +4,7 @@
 	  <b-navbar toggleable="lg" type="dark">
 		<b-navbar-toggle target="nav_collapse"/>
 
-		<b-navbar-brand href="#" class="m-l-3">CityGreen</b-navbar-brand>
+		<b-navbar-brand href="#" class="m-l-3">ResQNature</b-navbar-brand>
 
 		<b-collapse is-nav id="nav_collapse">
 		  <b-navbar-nav>
