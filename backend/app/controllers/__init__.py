@@ -4,3 +4,4 @@ from . import home
 from . import account
 from . import pin
 from . import event
+from . import utils
