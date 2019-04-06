@@ -1,59 +1,49 @@
 <template>
-    <div class="container">
-        <img alt="App logo" src="../assets/img/logo.png">
-        <b-form @submit="onSubmit" v-if="show">
-      <b-form-group
-        id="exampleInputGroup1"
-        label="Email address:"
-        label-for="exampleInput1"
-      >
-        <b-form-input
-          id="exampleInput1"
-          type="email"
-          v-model="form.email"
-          required
-          placeholder="Enter email" />
-      </b-form-group>
+	<div class="container">
+		<img src="../assets/img/logo.png" class="mt-5 mb-3 w-100">
 
-      <b-form-group id="exampleInputGroup2" label="Your password:" label-for="exampleInput2">
-        <b-form-input
-          id="exampleInput2"
-          type="password"
-          v-model="form.password"
-          required
-          placeholder="Enter password" />
-      </b-form-group>
+		<b-form-group label="Email address">
+			<b-form-input type="email" v-model="email" required placeholder="Email"/>
+		</b-form-group>
 
-      <b-button type="submit" @click.prevent="onSubmit" variant="outline-primary">Login</b-button>
-    </b-form>
-    </div>
+		<b-form-group label="Password">
+			<b-form-input type="password" v-model="password" required placeholder="Email"/>
+		</b-form-group>
+
+		<b-button @click="onLoginPressed" variant="primary" block>Login</b-button>
+		<div class="create-account-text" @click="goToRegister">Don't have an account? Create one!</div>
+	</div>
 </template>
 
 <script>
-import axios from 'axios'
-import router from '@/router'
+import axios from "axios";
+import router from "@/router";
 
 export default {
-    data() {
-      return {
-        form: {
-          email: '',
-          password: '',
-        },
-        show: true
-      }
-    },
-    methods: {
-      onSubmit(evt) {
-        let formData = {
-            email: this.form.email,
-            password: this.form.password,
-        }
-
-        this.$store.dispatch('auth/login', formData).then(() => {
-            this.$router.replace('/dashboard');
-        });
-      }
-    }
-}
+	data() {
+		return {
+			email: '',
+			password: '',
+		}
+	},
+	methods: {
+		onLoginPressed() {
+			this.$store.dispatch("auth/login", { email: email, password: password }).then(() => {
+				this.$router.replace("/map");
+			})
+		},
+		goToRegister() {
+			this.$router.replace("/register");
+		},
+	}
+};
 </script>
+
+<style>
+	.create-account-text {
+		margin-top: 20px;
+		text-decoration: underline;
+		font-size: 0.9em;
+	}
+</style>
+

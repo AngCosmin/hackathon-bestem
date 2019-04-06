@@ -60,6 +60,7 @@ def details():
             'created_at': pin.created_at,
             'type': 1,
             'pictures': [],
+            'status': pin.status,
         }
 
         pictures = Pictures.select().where(Pictures.pin == id)
@@ -72,7 +73,14 @@ def details():
         user_id = pin.user
         user = Users.get_or_none(Users.id == user_id)
         pictures = [user.avatar]
-        mydict = {'type': 2, 'name': user.name, 'email': user.email, 'info': user.info, 'phone': user.phone, 'pictures': pictures}
+        mydict = {
+            'type': 2,
+            'name': user.name,
+            'email': user.email,
+            'info': user.info,
+            'phone': user.phone,
+            'pictures': pictures
+        }
 
     return jsonify({'success': True, 'message': mydict}), 200
 
@@ -96,7 +104,7 @@ def my_pins():
 def allPins():
     allPins = []
     for pin in Pins.select():
-        dict = {'id': pin.id, 'position': {'lat': pin.lat, 'lng': pin.lng}, 'type': pin.type}
+        dict = {'id': pin.id, 'position': {'lat': pin.lat, 'lng': pin.lng}, 'type': pin.type, 'status': pin.status}
         allPins.append(dict)
 
     return jsonify({'success': True, 'message': allPins}), 200
