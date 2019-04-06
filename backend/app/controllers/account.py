@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from app.models.pictures import Pictures
 from app.models.users import Users
 from app.models.users_friends import Users_Friends
 
