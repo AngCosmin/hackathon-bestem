@@ -19,6 +19,13 @@ def create():
 
 
 
+@blueprint.route('/invite', methods=['POST'])
+def invite():
+
+
+    return jsonify({'success': True, 'message': 'Your event was created'}), 200
+
+
 
 
 
