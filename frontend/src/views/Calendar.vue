@@ -14,11 +14,28 @@
 
 		<b-modal ref="modal-event-details" hide-footer :title="eventDetails.title">
 			<div class="d-block text-center">
-				<b-button type="submit" variant="primary">Going</b-button>
+				{{ eventDetails.description }}
+				
+				<hr v-if="eventDetails.description !== null">
+
+				<div>Starting on {{ eventDetails.start }}</div>
+				<div>Ending on {{ eventDetails.end }}</div>
+				<hr>
+
+				<b-input-group class="mt-3">
+					<b-form-input v-model="friendEmail" placeholder="Friend's email"></b-form-input>
+					<b-input-group-append>
+						<b-button variant="primary" @click="onInvitePressed">Invite</b-button>
+					</b-input-group-append>
+				</b-input-group>
+				<hr>
+
+				<div v-if="invitationSuccess === true" class="text-success">Invitation sent!</div>
+				<div v-else-if="invitationSuccess === false" class="text-danger">Email not found!</div>
+				
+				<b-button class="mt-3" variant="primary" block>Going</b-button>
 			</div>
 		</b-modal>
-
-		
 	</div>
 </template>
 
@@ -27,6 +44,7 @@ import { mapGetters } from "vuex";
 import axios from '@/services/api.service'
 import router from "@/router";
 import 'fullcalendar/dist/fullcalendar.css'
+import { setTimeout } from 'timers';
 
 export default {
 	computed: {
@@ -36,37 +54,60 @@ export default {
 	},
 	data() {
 		return {
-			events: [
-				{
-					title: 'Clean',
-					description: 'desc',
-					start: '2019-04-07 12:00',
-					end: '2019-04-07 18:00',
-				},
-			],
+			friendEmail: '',
+			selectedEventId: null,
+			invitationSuccess: null,
+			events: [],
 			config: {
 				defaultView: 'month',
 				height: 'auto',
-				eventRender: function(event, element) {
-					console.log(event)
-				}
 			},
 			eventDetails: {
+				id: '',
 				title: '',
-				description: '',
+				description: null,
+				start: '',
+				end: '',
 			}
 		}
 	},
 	watch: {
 	},
 	created() {
+		this.getEvents()
 	},
 	methods: {
 		eventSelected(e) {
 			this.$refs['modal-event-details'].show()
-			console.log(e)
-
+			this.eventDetails.id = e.id
 			this.eventDetails.title = e.title
+			this.eventDetails.description = e.description
+			this.eventDetails.start = e.start.format("DD-MM-YYYY HH:mm")
+			this.eventDetails.end = e.end.format("DD-MM-YYYY HH:mm")
+
+			this.selectedEventId = e.id
+		},
+		getEvents() {
+			axios.get('event/all').then(response => {
+				this.events = response.data.message
+			})
+		},
+		onInvitePressed() {
+			let formData = new FormData()
+			formData.append('email_to', this.friendEmail)
+			formData.append('event_id', this.selectedEventId)
+
+			this.invitationSuccess = false
+			setTimeout(() => {
+				this.invitationSuccess = null
+			}, 3000)
+
+			// axios.post('', formData).then(response => {
+			// 	console.log(response)
+				
+			// }).catch(() => {
+
+			// })
 		}
 	}
 }

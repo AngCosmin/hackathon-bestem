@@ -37,7 +37,7 @@
 
 		<b-modal ref="modal-details" hide-footer :title="pinDetails.title">
 			<div class="d-block text-center">
-				<span v-html="rawHtml">{{ pinDetails.description }}</span>
+				<span v-html="pinDetails.description"></span>
 
 				<b-carousel
 					:interval="3000"
@@ -53,11 +53,23 @@
 
 				<template v-if="pinDetails.type === 1">
 					<b-button class="mt-3" variant="primary" block>Create event</b-button>
+					<b-button class="mt-3" variant="primary" block @click="onMarkAsCleanedPressed">Mark as cleaned</b-button>
 				</template>
 				<template v-else>
 					<b-button class="mt-3" variant="primary" block>Call</b-button>
 					<b-button class="mt-3" variant="primary" block>Email</b-button>
 				</template>
+			</div>
+		</b-modal>
+
+		<b-modal ref="modal-mark-as-cleaned" hide-footer title="Mark as cleaned">
+			<div class="d-block text-center">
+				<div class="form-group">
+					<label>Select photo as a proof</label>
+					<b-form-file v-model="markAsCleaned.photo" drop-placeholder="Drop file here..."></b-form-file>
+				</div>
+
+				<b-button type="submit" variant="primary" @click="onMarkAsCleanedConfirmedPressed">Confirm</b-button>
 			</div>
 		</b-modal>
 
@@ -107,6 +119,9 @@ export default {
 				pictures: [],
 				phone: '',
 				email: '',
+			},
+			markAsCleaned: {
+				photo: null,
 			}
 		};
 	},
@@ -178,6 +193,25 @@ export default {
 				this.$refs['modal-details'].show()
 			})
 		},
+		onMarkAsCleanedPressed() {
+			this.$refs['modal-details'].hide()
+			this.$refs['modal-mark-as-cleaned'].show()
+		},
+		onMarkAsCleanedConfirmedPressed() {
+			let formData = new FormData()
+			formData.append('file', this.markAsCleaned.photo)
+
+			axios.post("/pin/mark_as_clean", formData, { 
+				headers: { 
+					'Content-Type': 'multipart/form-data',
+					'Authorization': 'Bearer 123'
+				}
+			}).then(response => {
+				this.$refs['modal-mark-as-cleaned'].hide()
+			}).catch(error => {
+				console.error(error);
+			})
+		},
 		onSaveNewSpot() {
 			let formData = new FormData()
 			formData.append('title', this.newPin.form.title)
@@ -198,7 +232,7 @@ export default {
 				this.$refs['modal-create'].hide()
 			}).catch(error => {
 				console.error(error);
-			});
+			})
 		},
 		onAddPressed(e) {
 			this.makeAnimation(e)
