@@ -10,6 +10,9 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import router from './router'
 import VueRouter from 'vue-router'
 
+// Calendar
+import FullCalendar from 'vue-full-calendar'
+
 // Store
 import store from './store/index'
 
@@ -25,6 +28,7 @@ axios.defaults.baseURL = 'http://localhost:5000';
 Vue.use(BootstrapVue)
 Vue.use(Vuex)
 Vue.use(VueRouter)
+Vue.use(FullCalendar)
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyBfUwZZLyoHnHjmywdCtEMNaxyXI8IU2ew',
