@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.models.events import Events
-
-import datetime
-
+from app.models.pins import Pins
 
 blueprint = Blueprint('event', __name__, url_prefix='/event')
 
@@ -20,13 +18,11 @@ def create():
     return jsonify({'success': True, 'message': 'Your event was created'}), 200
 
 
-
 @blueprint.route('/invite', methods=['POST'])
 def invite():
 
 
     return jsonify({'success': True, 'message': 'Your event was created'}), 200
-
 
 
 @blueprint.route('/all', methods=['GET'])
@@ -37,6 +33,4 @@ def all():
         allEvents.append(dict)
 
     return jsonify({'success': True, 'message': allEvents}), 200
-
-
 

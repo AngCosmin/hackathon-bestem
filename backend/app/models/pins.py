@@ -14,3 +14,4 @@ class Pins(BaseModel):
     description = TextField()
     title = CharField()
     type = IntegerField()
+    status = IntegerField(default=0)
