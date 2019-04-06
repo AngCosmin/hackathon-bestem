@@ -1,4 +1,4 @@
-from peewee import CharField, ForeignKeyField, TextField
+from peewee import CharField, ForeignKeyField, TextField, IntegerField
 
 from app.models.base import BaseModel
 from app.models.roles import Roles
@@ -11,3 +11,7 @@ class Users(BaseModel):
     name = CharField()
     phone = CharField()
     info = TextField()
+    avatar = CharField()
+    points = IntegerField(default=0)
+    placed_reported = IntegerField(default=0)
+    placed_cleaned = IntegerField(default=0)
