@@ -12,7 +12,7 @@ let routes = [
     {
         path: '/',
         component: loadView('Home'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
         name: 'home',
     },
     {
@@ -22,22 +22,22 @@ let routes = [
         name: 'login',
     },
     {
-        path: '/products',
-        component: loadView('Products'),
+        path: '/map',
+        component: loadView('Map'),
         meta: { requiresAuth: true },
-        name: 'products',
+        name: 'map',
     },
     {
-        path: '/dashboard',
-        component: loadView('Dashboard'),
+        path: '/calendar',
+        component: loadView('Calendar'),
         meta: { requiresAuth: true },
-        name: 'dashboard',
+        name: 'calendar',
     },
     {
-        path: '/tables',
-        component: loadView('Tables'),
+        path: '/profile',
+        component: loadView('Profile'),
         meta: { requiresAuth: true },
-        name: 'tables',
+        name: 'profile',
     },
 ]
 
