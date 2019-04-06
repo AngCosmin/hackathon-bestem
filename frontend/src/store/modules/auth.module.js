@@ -2,65 +2,55 @@ import axios from '@/services/api.service'
 import router from '@/router'
 
 const state = {
-	email: null,
-	password: null,
+	token: null
 }
 
 const mutations = {
-	authUser(state, userData) {
-		state.email = userData.email
-		state.password = userData.password
+	authUser(state, token) {
+		state.token = token
 	},
 	clearAuthData(state) {
-		state.email = null
-		state.password = null
-	}
-
-};
-
-const getters = {
-	isAuthenticated(state) {
-		return state.email !== null
-	},
-	getEmail(state) {
-		return state.email
+		state.token = null
 	}
 }
 
+const getters = {
+	isAuthenticated(state) {
+		return state.token !== null
+	},
+}
 
 const actions = {
 	login: ({ commit }, authData) => {
-		axios.post('/restaurant/login', {
-			email: authData.email,
-			password: authData.password,
-		}).then(response => {
-			commit('authUser', { email: authData.email, password: authData.password });
-			localStorage.setItem('email', authData.email)
-			localStorage.setItem('password', authData.password)
-			router.replace('/products');
+		let formData = new FormData()
+
+		formData.append('email', authData.email)
+		formData.append('password', authData.password)
+
+		axios.post('/auth/login', authData).then(response => {
+			commit('authUser', response.data.token);
+			localStorage.setItem('token', response.data.token)
+			router.replace('/map');
 		}).catch(error => {
 			console.error(error);
 		})
 	},
 	autoLogin({ commit, dispatch }) {
-		let email = localStorage.getItem('email')
-		let password = localStorage.getItem('password')
+		let token = localStorage.getItem('token')
 
-		if (!email) {
+		if (!token) {
 			dispatch('logout')
 			return
 		}
 
-		commit('authUser', { email: email })
+		commit('authUser', token)
 	},
 	logout: ({ commit }) => {
 		commit('clearAuthData');
-		localStorage.removeItem('email');
-		localStorage.removeItem('password');
+		localStorage.removeItem('token');
 		router.push('/login')
 	},
 }
-
 
 export default {
 	namespaced: true,

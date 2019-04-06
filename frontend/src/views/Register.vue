@@ -19,7 +19,7 @@
 		</b-form-group>
 
 		<b-form-group label="Password">
-			<b-form-input type="password" v-model="password" required placeholder="Email"/>
+			<b-form-input type="password" v-model="password" required placeholder="Password"/>
 		</b-form-group>
 
 		<b-form-group v-if="role === 2" label="Phone">
@@ -30,11 +30,19 @@
 			<b-form-textarea v-model="info" placeholder="Other info" rows="3" max-rows="6"></b-form-textarea>
 		</b-form-group>
 
-		<GmapMap v-if="role === 2" :options="mapOptions" :center="location" :zoom="12" map-type-id="terrain" class="mb-3" style="height: 400px">
+		<GmapMap v-if="role === 2" :options="mapOptions" :center="{ lat: 44.430350, lng: 26.102209 }" :zoom="12" map-type-id="terrain" class="mb-3" style="height: 400px">
 			<GmapMarker :position="location" @drag="onLocationChange" :draggable="true">
 				<gmap-info-window :opened="true">Drag me somewhere</gmap-info-window>
 			</GmapMarker>
 		</GmapMap>
+
+		<div :class="{ 'text-success': registrationSuccess, 'text-danger': !registrationSuccess }" class="mt-3 mb-3">
+			<span v-if="registrationSuccess === true">
+				You have successfully registered! <br> 
+				Go to <span class="go-to-login" @click="goToLogin">login</span>
+			</span>
+			<span v-else-if="registrationSuccess === false">There was an error</span>
+		</div>
 
 		<b-button @click="onRegisterPressed" variant="primary" class="mb-3" block>Register</b-button>
 	</div>
@@ -47,6 +55,7 @@ import router from "@/router";
 export default {
 	data() {
 		return {
+			registrationSuccess: null,
 			mapOptions: {
 				fullscreenControl: false,
 				streetViewControl: false,
@@ -62,23 +71,38 @@ export default {
 	},
 	methods: {
 		onRegisterPressed() {
-			this.$store.dispatch("auth/login", { email: email, password: password }).then(() => {
-				this.$router.replace("/map");
+			let formData = new FormData()
+
+			formData.append('role', this.role)
+			formData.append('name', this.name)
+			formData.append('email', this.email)
+			formData.append('password', this.password)
+
+			if (this.role === 2) {
+				formData.append('phone', this.phone)
+				formData.append('info', this.info)
+				formData.append('lat', this.location.lat)
+				formData.append('lng', this.location.lng)
+			}
+
+			axios.post('/auth/register', formData).then(response => {
+				this.registrationSuccess = true
 			})
 		},
 		onLocationChange(location) {
-			this.newPin.position.lat = location.latLng.lat()
-			this.newPin.position.lng = location.latLng.lng()
+			this.location.lat = location.latLng.lat()
+			this.location.lng = location.latLng.lng()
 		},
+		goToLogin() {
+			this.$router.replace("/login");
+		}
 	}
 };
 </script>
 
 <style>
-	.create-account-text {
-		margin-top: 20px;
+	.go-to-login {
 		text-decoration: underline;
-		font-size: 0.9em;
 	}
 </style>
 

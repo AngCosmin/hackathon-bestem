@@ -10,8 +10,8 @@ blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
 @blueprint.route('/login', methods=['POST'])
 def login():
-    email = request.form['email']
-    password = request.form['password']
+    email = request.json['email']
+    password = request.json['password']
 
     user = Users.get_or_none(Users.email == email, Users.password == password)
 
@@ -39,12 +39,12 @@ def register():
         lat = request.form['lat']
         lng = request.form['lng']
 
-    user = Users.create(email=email, password=password, role=role.name, name=name, phone=phone, info=info)
+    user = Users.create(email=email, password=password, role=role, name=name, phone=phone, info=info)
 
     if role == 2:
         Pins.create(user_id=user.id, lat=lat, lng=lng, type=2)
 
-    return jsonify({'success': False, 'message': 'User registered!'}), 200
+    return jsonify({'success': True, 'message': 'User registered!'}), 200
 
 
 @blueprint.route('/logout')

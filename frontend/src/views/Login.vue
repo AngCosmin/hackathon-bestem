@@ -28,7 +28,7 @@ export default {
 	},
 	methods: {
 		onLoginPressed() {
-			this.$store.dispatch("auth/login", { email: email, password: password }).then(() => {
+			this.$store.dispatch("auth/login", { email: this.email, password: this.password }).then(() => {
 				this.$router.replace("/map");
 			})
 		},
