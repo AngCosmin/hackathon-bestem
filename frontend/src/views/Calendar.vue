@@ -16,7 +16,8 @@
 			<div class="d-block text-center">
 				{{ eventDetails.description }}
 				
-				<hr>
+				<hr v-if="eventDetails.description !== null">
+
 				<div>Starting on {{ eventDetails.start }}</div>
 				<div>Ending on {{ eventDetails.end }}</div>
 				<hr>
@@ -54,18 +55,17 @@ export default {
 	data() {
 		return {
 			friendEmail: '',
+			selectedEventId: null,
 			invitationSuccess: null,
 			events: [],
 			config: {
 				defaultView: 'month',
 				height: 'auto',
-				eventRender: function(event, element) {
-					console.log(event)
-				}
 			},
 			eventDetails: {
+				id: '',
 				title: '',
-				description: '',
+				description: null,
 				start: '',
 				end: '',
 			}
@@ -79,10 +79,13 @@ export default {
 	methods: {
 		eventSelected(e) {
 			this.$refs['modal-event-details'].show()
+			this.eventDetails.id = e.id
 			this.eventDetails.title = e.title
 			this.eventDetails.description = e.description
 			this.eventDetails.start = e.start.format("DD-MM-YYYY HH:mm")
 			this.eventDetails.end = e.end.format("DD-MM-YYYY HH:mm")
+
+			this.selectedEventId = e.id
 		},
 		getEvents() {
 			axios.get('event/all').then(response => {
@@ -91,7 +94,8 @@ export default {
 		},
 		onInvitePressed() {
 			let formData = new FormData()
-			formData.append('friend_email', this.friendEmail)
+			formData.append('email_to', this.friendEmail)
+			formData.append('event_id', this.selectedEventId)
 
 			this.invitationSuccess = false
 			setTimeout(() => {
