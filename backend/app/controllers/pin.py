@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from imgurpython import ImgurClient
 
+from app.controllers.utils import verify_if_user_should_receive_a_badge
 from app.models.pictures import Pictures
 from app.models.pins import Pins
 from app.models.users import Users
@@ -43,6 +44,8 @@ def create():
     user = Users.get_or_none(Users.id == user_id)
     query = Users.update(places_reported=(user.places_reported + 1)).where(Users.id == user_id)
     query.execute()
+
+    verify_if_user_should_receive_a_badge(user_id)
 
     return jsonify({'success': True, 'message': 'Your pin was created'}), 200
 
@@ -110,7 +113,7 @@ def allPins():
     return jsonify({'success': True, 'message': allPins}), 200
 
 
-@blueprint.route('/mark_cleaned', methods=['POST'])
+@blueprint.route('/mark_as_clean', methods=['POST'])
 # @jwt_required
 def mark_clean():
     user_id = 1#get_jwt_identity()
