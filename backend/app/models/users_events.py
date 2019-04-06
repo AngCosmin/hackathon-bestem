@@ -10,4 +10,3 @@ class Users_Events(BaseModel):
     event = ForeignKeyField(Events, backref='Users_Events')
     invited_by_id = IntegerField()
     status = IntegerField()
-

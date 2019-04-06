@@ -102,7 +102,34 @@ def allPins():
     return jsonify({'success': True, 'message': allPins}), 200
 
 
+@blueprint.route('/mark_cleaned', methods=['POST'])
+# @jwt_required
+def mark_clean():
+    user_id = 1#get_jwt_identity()
+    pin_id = request.form['pin_id']
 
+    f = None
+    if len(request.files) > 0:
+        f = request.files['file']
+
+    filename = None
+    if f is not None:
+        value = randint(1, 100000000)
+        path = 'instance/images'
+        name = '{}-{}'.format(user_id, value)
+        extension = f.filename.split('.')[1]
+        filename = '{}/{}.{}'.format(path, name, extension)
+        f.save(os.path.join(filename))
+
+    query = Pins.update(status=1).where(Pins.id == pin_id)
+    query.execute()
+
+    if filename is not None:
+        image = imgur_client.upload_from_path(filename)
+        Pictures.create(url=image['link'], pin=pin_id)
+
+
+    return jsonify({'success': True, 'message': 'Your pin was updated'}), 200
 
 
 

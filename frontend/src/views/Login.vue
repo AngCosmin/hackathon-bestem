@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <img alt="App logo" src="../assets/logo.png">
+        <img alt="App logo" src="../assets/img/logo.png">
         <b-form @submit="onSubmit" v-if="show">
       <b-form-group
         id="exampleInputGroup1"

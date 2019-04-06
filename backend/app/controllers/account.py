@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-
+from operator import itemgetter
 from app.models.users import Users
 from app.models.users_friends import Users_Friends
 
@@ -40,3 +40,19 @@ def friends():
         })
 
     return jsonify({'success': True, 'message': friends}), 200
+
+
+@blueprint.route('/leaderboard', methods=['GET'])
+def leaderboard():
+    users = Users.select().where(Users.role == 1)
+    board = []
+    for user in users:
+        board.append({
+            'name': user.name,
+            'avatar': user.avatar,
+            'points': user.points
+        })
+
+    newboard = sorted(board, key=itemgetter('points'), reverse=True)
+
+    return jsonify({'success': True, 'message': newboard}), 200
