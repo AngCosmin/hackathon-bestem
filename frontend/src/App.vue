@@ -8,7 +8,10 @@
 
         <b-collapse is-nav id="nav_collapse">
           <b-navbar-nav>
-            <b-nav-item active><router-link v-if="isAuth" :to="{ name: 'home' }">Home</router-link></b-nav-item>
+            <b-nav-item active><router-link :to="{ name: 'home' }">Home</router-link></b-nav-item>
+            <b-nav-item active><router-link v-if="isAuth" :to="{ name: 'map' }">Map</router-link></b-nav-item>
+            <b-nav-item active><router-link v-if="isAuth" :to="{ name: 'calendar' }">Calendar</router-link></b-nav-item>
+            <b-nav-item active><router-link v-if="isAuth" :to="{ name: 'profile' }">Profile</router-link></b-nav-item>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
