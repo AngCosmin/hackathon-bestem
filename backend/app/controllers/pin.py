@@ -1,13 +1,12 @@
 import os
 from random import randint
 
-from flask import current_app as app
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from werkzeug.utils import secure_filename
 
 from app.models.pictures import Pictures
 from app.models.pins import Pins
+from app.models.users import Users
 
 blueprint = Blueprint('pin', __name__, url_prefix='/pin')
 
@@ -32,22 +31,31 @@ def create():
 
         f.save(os.path.join(filename))
 
-    pin = Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description)
+    pin = Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description, type=1)
     if filename is not None:
         Pictures.create(url=filename, pin=pin.id)
 
     return jsonify({'success': True, 'message': 'Your pin was created'}), 401
 
 
-@blueprint.route('/get_status', methods=['GET'])
-def get_status():
+
+@blueprint.route('/details', methods=['GET'])
+def details():
     id = request.args['pin_id']
 
     pin = Pins.get_or_none(Pins.id == id)
-    mydict = {'pin' : 'jmekerie'}
-    ## get values for pop up
+    #user
+    if pin.type == 1:
+        mydict = {'title': pin.title, 'description': pin.description,
+                  'created_at': pin.created_at, 'type': 1}
+    # company
+    else:
+        user_id = pin.user
+        user = Users.get_or_none(Users.id == user_id)
+        mydict = {'type': 2, 'email': user.email, 'info': user.info, 'phone': user.phone}
 
     return jsonify({'success': True, 'message': mydict}), 401
+
 
 
 @blueprint.route('/my_pins', methods=['GET'])
@@ -61,6 +69,7 @@ def my_pins():
         my_pins.append(pin.created_at)
 
     return jsonify({'success': True, 'message': my_pins}), 401
+
 
 
 @blueprint.route('/all', methods=['GET'])

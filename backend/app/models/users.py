@@ -1,4 +1,4 @@
-from peewee import CharField, ForeignKeyField
+from peewee import CharField, ForeignKeyField, TextField
 
 from app.models.base import BaseModel
 from app.models.roles import Roles
@@ -9,3 +9,5 @@ class Users(BaseModel):
     password = CharField()
     role = ForeignKeyField(Roles, backref='Role')
     name = CharField()
+    phone = CharField()
+    info = TextField()
