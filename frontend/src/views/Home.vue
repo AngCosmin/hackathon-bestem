@@ -31,8 +31,6 @@
 					<b-form-file v-model="newPin.form.photo" drop-placeholder="Drop file here..."></b-form-file>
 				</div>
 
-				{{ newPin.form.photo }}
-
 				<b-button type="submit" variant="primary" @click="onSaveNewSpot">Save</b-button>
 			</div>
 		</b-modal>

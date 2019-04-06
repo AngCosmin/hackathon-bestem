@@ -1,5 +1,5 @@
 import os
-from random import random
+from random import randint
 
 from flask import current_app as app
 from flask import Blueprint, request, jsonify
@@ -24,9 +24,14 @@ def create():
     f = request.files['file']
     filename = None
     if f is not None:
-        value = random(100000000)
-        f.save(os.path.join(app.instance_path, 'images', secure_filename(str(user_id) + str(value))))
-        filename = app.instance_path + '/images/' + str(user_id) + str(value)
+        value = randint(1, 100000000)
+        path = 'instance/images'
+        name = '{}-{}'.format(user_id, value)
+        extension = f.filename.split('.')[1]
+        filename = '{}/{}.{}'.format(path, name, extension)
+
+        f.save(os.path.join(filename))
+
     pin = Pins.create(user_id=user_id, lat=lat, lng=lng, title=title, description=description)
     if filename is not None:
         Pictures.create(url=filename, pin=pin.id)

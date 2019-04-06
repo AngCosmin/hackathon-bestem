@@ -66,7 +66,7 @@ export default {
 }
 
 .navbar {
-  background-color: #2c3e50 !important;
+  background-color: #27ae60 !important;
 }
 
 .container-fluid {
