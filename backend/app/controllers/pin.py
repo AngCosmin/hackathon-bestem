@@ -15,10 +15,9 @@ imgur_client = ImgurClient('980b05841441b73', '3e90da14519e42a635835cdd14028c144
 
 
 @blueprint.route('/create', methods=['POST'])
-# @jwt_required
+@jwt_required
 def create():
-    # user_id = get_jwt_identity()
-    user_id = 1
+    user_id = get_jwt_identity()
     lat = request.form['lat']
     lng = request.form['lng']
     title = request.form['title']
@@ -51,6 +50,7 @@ def create():
 
 
 @blueprint.route('/details', methods=['GET'])
+@jwt_required
 def details():
     id = request.args['pin_id']
 
@@ -104,6 +104,7 @@ def my_pins():
 
 
 @blueprint.route('/all', methods=['GET'])
+@jwt_required
 def allPins():
     allPins = []
     for pin in Pins.select():
@@ -114,9 +115,9 @@ def allPins():
 
 
 @blueprint.route('/mark_as_clean', methods=['POST'])
-# @jwt_required
+@jwt_required
 def mark_clean():
-    user_id = 1#get_jwt_identity()
+    user_id = get_jwt_identity()
     pin_id = request.form['pin_id']
 
     f = None

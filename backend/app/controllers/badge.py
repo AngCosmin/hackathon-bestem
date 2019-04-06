@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 
 from app.models.badges import Badges
 from app.models.events import Events
@@ -18,13 +19,13 @@ def create_specific_badge(type, user_id):
 
 
 @blueprint.route('/invite', methods=['POST'])
+@jwt_required
 def invite():
-
-
     return jsonify({'success': True, 'message': 'Your event was created'}), 200
 
 
 @blueprint.route('/all', methods=['GET'])
+@jwt_required
 def all():
     allEvents = []
     for event in Events.select():

@@ -15,6 +15,7 @@ def verify_if_user_should_receive_a_badge(user_id):
 
 
 @blueprint.route('/get_emails', methods=['GET'])
+@jwt_required
 def get_emails():
     string = request.form['string']
 

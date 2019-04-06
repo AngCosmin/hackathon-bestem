@@ -43,6 +43,7 @@ def friends():
 
 
 @blueprint.route('/leaderboard', methods=['GET'])
+@jwt_required
 def leaderboard():
     users = Users.select().where(Users.role == 1)
     board = []
