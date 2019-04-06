@@ -33,7 +33,7 @@ def invite():
 def all():
     allEvents = []
     for event in Events.select():
-        dict = {'title': event.title, 'description': event.description, 'start': event.time_start, 'end': event.time_end}
+        dict = {'title': event.title, 'description': event.description, 'start': str(event.time_start), 'end': str(event.time_end)}
         allEvents.append(dict)
 
     return jsonify({'success': True, 'message': allEvents}), 200
