@@ -1,3 +1,4 @@
+from datetime import datetime
 from email.mime.text import MIMEText
 
 from flask import Blueprint, request, jsonify
@@ -109,7 +110,7 @@ def approve_user_profile():
 @blueprint.route('/approve_pin_cleaned', methods=['POST'])
 def approve_pin_cleaned():
     pin_id = request.form['pin_id']
-    query = Pins.update(status=1).where(Pins.id == pin_id)
+    query = Pins.update(status=1, cleaned_at=datetime.now).where(Pins.id == pin_id)
     query.execute()
 
     user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)
