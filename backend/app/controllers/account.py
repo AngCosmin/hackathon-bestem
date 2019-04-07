@@ -126,7 +126,7 @@ def pins_from_day():
         mylist.append({
             'Cleaned spots': day_cleaned_pins,
             'Reported spots': day_reported_pins,
-            'Date': date_N_days_ago
+            'Date': date_N_days_ago.strftime('%d %b')
         })
 
-    return jsonify({'success': True, 'message': mylist}), 200
+    return jsonify({'success': True, 'message': mylist[::-1]}), 200

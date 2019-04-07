@@ -51,12 +51,8 @@ export default {
 			badges: [],
 			selectedBadge: null,
 			chartData: {
-				columns: ['date', 'Cleaned spots', 'Reported spots'],
+				columns: ['Date', 'Reported spots', 'Cleaned spots'],
 				rows: [
-					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '01/01' },
-					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '02/01' },
-					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '03/01' },
-					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '04/01' },
 				]
 			}
 		}
@@ -78,6 +74,10 @@ export default {
 		axios.get('/badge/get-user-badges').then(response => {
 			let result = response.data.message
 			this.badges = result
+		})
+
+		axios.get('/account/statistics').then(response => {
+			this.chartData.rows = response.data.message
 		})
 	},
 	methods: {

@@ -117,7 +117,7 @@ def approve_pin_cleaned():
     query.execute()
 
     user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)
-    query = Users.update(points=user.points + 20, places_cleaned=user.places_cleaned+1)
+    query = Users.update(points=user.points + 20, places_cleaned=(user.places_cleaned+1))
     query.execute()
 
     assign_badge_clean(user.id)

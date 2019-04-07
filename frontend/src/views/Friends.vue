@@ -1,11 +1,11 @@
 <template>
   	<div class="container">
 		<h5 v-if="friends !== null && friends.length === 0">
-			You have no friends :(
+			You are not following someone :(
 			<img src="http://www.reactiongifs.com/r/sbbn.gif" class="mt-5 w-100">
 		</h5>
 
-		<b-card v-if="friends.length > 0" class="mt-3" bg-variant="white" text-variant="dark" title="Friends">
+		<b-card v-if="friends.length > 0" class="mt-3" bg-variant="white" text-variant="dark" title="Follows">
 			<b-card-text v-for="user in friends" :key="user.name" class="text-left">
 				<img :src="user.avatar" width="48px">
 				{{ user.name }}

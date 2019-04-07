@@ -78,8 +78,8 @@
 					<span v-else-if="pinDetails.status === 1" class="text-warning"><hr>Already cleaned</span>
 				</template>
 				<template v-else>
-					<b-button class="mt-3" variant="primary" block>Call</b-button>
-					<b-button class="mt-3" variant="primary" block>Email</b-button>
+					<b-button class="mt-3" variant="primary" block>Call ({{ pinDetails.phone }})</b-button>
+					<b-button class="mt-3" variant="primary" :href="`mailto:${pinDetails.email}`" block>Email</b-button>
 				</template>
 			</div>
 		</b-modal>
