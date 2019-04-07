@@ -51,6 +51,7 @@ def going():
     user_id = get_jwt_identity()
     event_id = request.form['event_id']
     Users_Events.create(user=user_id, event=event_id)
+    Users.get(id=user_id).points += 10
     return jsonify({'success': True, 'message': 'Created successfully'}), 200
 
 
