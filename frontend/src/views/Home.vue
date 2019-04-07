@@ -45,6 +45,10 @@ export default {
 				columns: ['city', 'Very satisfied', 'Rather satisfied'],
 				rows: [
 					{ 'city': 'Luxembourg', 'Very satisfied': 50, 'Rather satisfied': 45 },
+					{ 'city': 'Bucharest', 'Very satisfied': 6, 'Rather satisfied': 31 },
+					{ 'city': 'London', 'Very satisfied': 18, 'Rather satisfied': 49 },
+					{ 'city': 'Paris', 'Very satisfied': 4, 'Rather satisfied': 36 },
+					{ 'city': 'Amsterdam', 'Very satisfied': 12, 'Rather satisfied': 50 },
 				]
 			}
 		}
