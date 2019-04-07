@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from operator import itemgetter
 from app.models.users import Users
@@ -57,3 +57,13 @@ def leaderboard():
     newboard = sorted(board, key=itemgetter('points'), reverse=True)
 
     return jsonify({'success': True, 'message': newboard}), 200
+
+@blueprint.route('/follow', methods=['POST'])
+@jwt_required
+def follow():
+    friend_id = request.form[0]
+    user_id = get_jwt_identity()
+
+    Users_Friends.create(user=user_id, friend=friend_id)
+
+    return jsonify({'success': True, 'message': 'follow'}), 200
