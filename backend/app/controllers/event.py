@@ -27,7 +27,6 @@ def create():
 @blueprint.route('/invite', methods=['POST'])
 @jwt_required
 def invite():
-
     return jsonify({'success': True, 'message': 'Your event was created'}), 200
 
 

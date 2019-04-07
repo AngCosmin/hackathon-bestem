@@ -58,6 +58,7 @@ def leaderboard():
 
     return jsonify({'success': True, 'message': newboard}), 200
 
+
 @blueprint.route('/follow', methods=['POST'])
 @jwt_required
 def follow():
