@@ -10,7 +10,7 @@ blueprint = Blueprint('event', __name__, url_prefix='/event')
 @blueprint.route('/create', methods=['POST'])
 @jwt_required
 def create():
-    pin_id = request.form['pid_id']
+    pin_id = request.form['pin_id']
     time_start = request.form['time_start']
     time_end = request.form['time_end']
     description = request.form['description']

@@ -44,6 +44,14 @@
 					<textarea v-model="newEvent.description" class="form-control" placeholder="Description"></textarea>
 				</div>
 
+				<div class="form-group">
+					<datetime v-model="newEvent.startDate" type="datetime" placeholder="Start date" input-class="form-control"></datetime>
+				</div>
+
+				<div class="form-group">
+					<datetime v-model="newEvent.endDate" type="datetime" placeholder="End date" input-class="form-control"></datetime>
+				</div>
+
 				<b-button type="submit" variant="primary" @click="onCreateEventConfirmPressed">Confirm</b-button>
 			</div>
 		</b-modal>
@@ -129,6 +137,8 @@ export default {
 			newEvent: {
 				title: '',
 				description: '',
+				startDate: null,
+				endDate: null,
 			},
 			pinDetails: {
 				type: '',
@@ -255,7 +265,21 @@ export default {
 			this.$refs['modal-create-event'].show()
 		},
 		onCreateEventConfirmPressed() {
+			let formData = new FormData()
+			formData.append('title', this.newEvent.title)
+			formData.append('description', this.newEvent.description)
+			formData.append('time_start', this.newEvent.startDate)
+			formData.append('time_end', this.newEvent.endDate)
+			formData.append('pin_id', this.selectedPinId)
 
+			axios.post("/event/create", formData).then(response => {
+				this.getPins()
+				this.resetNewPinData()
+
+				this.$refs['modal-create-event'].hide()
+			}).catch(error => {
+				console.error(error);
+			})
 		},
 		onSaveNewSpot() {
 			let formData = new FormData()
@@ -313,12 +337,32 @@ export default {
 				email: '',
 				status: 0,
 			}
+		},
+		resetNewEventData() {
+			this.newEvent = {
+				title: '',
+				description: '',
+				startDate: null,
+				endDate: null,
+			}
 		}
 	}
 }
 </script>
 
 <style>
+.vdatetime-popup__header {
+	background: #27ae60 !important;
+}
+
+.vdatetime-calendar__month__day--selected > span > span {
+	background: #27ae60 !important;	
+}
+
+.vdatetime-popup__actions__button, .vdatetime-time-picker__item--selected {
+	color: #27ae60 !important;	
+}
+
 .bubbly-button {
   position: fixed !important;
   bottom: 25px;
