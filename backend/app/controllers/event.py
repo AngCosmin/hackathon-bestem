@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 
@@ -10,9 +12,9 @@ blueprint = Blueprint('event', __name__, url_prefix='/event')
 @blueprint.route('/create', methods=['POST'])
 @jwt_required
 def create():
-    pin_id = request.form['pid_id']
-    time_start = request.form['time_start']
-    time_end = request.form['time_end']
+    pin_id = request.form['pin_id']
+    time_start = datetime.strptime(request.form['time_start'], '%Y-%m-%d %H:%M:%S.%f')
+    time_end = datetime.strptime(request.form['time_end'], '%Y-%m-%d %H:%M:%S.%f')
     description = request.form['description']
     title = request.form['title']
 

@@ -112,3 +112,25 @@ def pending_pins():
 
     return jsonify({'success': True, 'message': result}), 200
 
+
+@blueprint.route('/approve_user_profile', methods=['POST'])
+def approve_user_profile():
+    user_id = request.form['user_id']
+    query = Users.update(status=1).where(Users.id == user_id)
+    query.execute()
+
+    return jsonify({'success': True, 'message': 'Successfully updated!'}), 200
+
+
+@blueprint.route('/approve_pin_cleaned', methods=['POST'])
+def approve_pin_cleaned():
+    pin_id = request.form['pin_id']
+    query = Pins.update(status=1).where(Pins.id == pin_id)
+    query.execute()
+
+    user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)
+    query = Users.update(points=user.points + 20, places_cleaned=user.places_cleaned+1)
+    query.execute()
+
+    return jsonify({'success': True, 'message': 'Successfully approved!'}), 200
+
