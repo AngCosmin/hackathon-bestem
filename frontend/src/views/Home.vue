@@ -1,7 +1,7 @@
 <template>
   	<div class="container">
-		<h1> Welcome to the ResQNature! </h1>
-		<h2> We'll handle it from here. </h2>
+		<h2 class="mt-3"> Welcome to the ResQNature! </h2>
+		<h4> We'll handle it from here. </h4>
 
 		<p> Our application facilitates the process of marking and cleaning the polutted 
 			areas from your town! 9 out of 10 people said they would recycle if it were “easier”. 
