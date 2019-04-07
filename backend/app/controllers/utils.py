@@ -33,8 +33,8 @@ def get_emails():
     return jsonify({'success': True, 'message': result}), 200
 
 
-@blueprint.route('/send_mail', methods=['POST'])
-@jwt_required
+@blueprint.route('/send_mail', methods=['GET'])
+# @jwt_required
 def send_mail():
     current_user_id = get_jwt_identity()
     user = Users.get_or_none(Users.id == current_user_id)
@@ -46,7 +46,7 @@ def send_mail():
     message = "@" + user.name + " has invited you to take part in a recycling event : " + event.title + ".<br> <br>"
     message = message + '<strong>Note:</strong> This invitation was intended for <strong><a href="mailto:{}" target="_blank">{}</a></strong>.<br>'.format(email_to, email_to)
 
-    message = message + '<strong>Event Page:</strong> <strong><a href="https://google.com" style="color:#4183c4;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://github.com/settings/blocked_users?block_user%3DAngCosmin&amp;source=gmail&amp;ust=1554664209321000&amp;usg=AFQjCNFhcEiyGnWd5Kt311X8KnYc0aRuqg">Click here</a>'
+    message = message + '<strong>Event Page:</strong> <strong><a href="http://localhost:8080/#/event/' + str(event_id) + '" style="color:#4183c4;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://github.com/settings/blocked_users?block_user%3DAngCosmin&amp;source=gmail&amp;ust=1554664209321000&amp;usg=AFQjCNFhcEiyGnWd5Kt311X8KnYc0aRuqg">Click here</a>'
     email_body = """\
 <p class="m_-1403629251686063965email-body-subtext" style="color:#333;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:20px;margin:15px 0 5px;padding:0;text-align:left;word-wrap:normal" align="left">
 {}
@@ -119,6 +119,7 @@ def approve_pin_cleaned():
     user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)
     query = Users.update(points=user.points + 20, places_cleaned=user.places_cleaned+1)
     query.execute()
+
 
     return jsonify({'success': True, 'message': 'Successfully approved!'}), 200
 
