@@ -58,6 +58,7 @@ def going():
 @blueprint.route('/get', methods=['POST'])
 @jwt_required
 def get():
+    user_id = get_jwt_identity()
     event_id = request.form['event_id']
     event = Events.get_or_none(Events.id == event_id)
 
