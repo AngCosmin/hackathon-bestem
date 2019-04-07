@@ -33,7 +33,8 @@
 				<div v-if="invitationSuccess === true" class="text-success">Invitation sent!</div>
 				<div v-else-if="invitationSuccess === false" class="text-danger">Email not found!</div>
 				
-				<b-button class="mt-3" variant="primary" block>Going</b-button>
+				<b-button class="mt-3" variant="primary" block @click="goToEvent(eventDetails.id)">View</b-button>
+				<b-button class="mt-3" variant="primary" block @click="onGoingPressed(eventDetails.id)">Going</b-button>
 			</div>
 		</b-modal>
 	</div>
@@ -106,6 +107,9 @@ export default {
 			}).catch((error) => {
 				console.log(error)
 			})
+		},
+		goToEvent(id) {
+			this.$router.push({ name: 'event', params: { id: id } })
 		}
 	}
 }

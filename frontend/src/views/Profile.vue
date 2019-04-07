@@ -10,17 +10,18 @@
 			<b-button variant="outline-success" @click="goToFriends">Friends<br>{{ noFriends }}</b-button>
 			<b-button variant="outline-success">Reported spots<br>{{ reported }}</b-button>
 		</b-button-group>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
 
-		<b-card bg-variant="white" text-variant="dark" title="Badges">
-			<b-card-text v-for="badge in badges" :key="badge.icon" class="text-left">
-				<img :src="badge.icon" width="48px" @click="showDetails(badge)">
-				{{ badge.name }}
-			</b-card-text>
+		<b-card bg-variant="white" text-variant="dark" title="Badges" class="mb-3">
+			<div v-if="badges.length === 0">You have no badges</div>
+			<div v-else>
+				<b-card-text v-for="badge in badges" :key="badge.icon" class="text-left">
+					<img :src="badge.icon" width="48px" @click="showDetails(badge)">
+					{{ badge.name }}
+				</b-card-text>
+			</div>
 		</b-card>
+
+		<ve-line :data="chartData"></ve-line>
 
 		<b-modal v-if="selectedBadge" ref="modal-details" hide-footer :title="selectedBadge.name">
 			<div class="d-block text-center">
@@ -49,6 +50,16 @@ export default {
 			picture: null,
 			badges: [],
 			selectedBadge: null,
+			chartData: {
+				columns: ['date', 'cost'],
+				rows: [
+					{ 'cost': 5, 'date': '01/01' },
+					{ 'cost': 8, 'date': '01/03' },
+					{ 'cost': 3, 'date': '01/04' },
+					{ 'cost': 10, 'date': '01/05' },
+					{ 'cost': 12, 'date': '01/06' }
+				]
+			}
 		}
 	},
 	watch: {

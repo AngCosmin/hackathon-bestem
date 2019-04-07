@@ -25,6 +25,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'vue-datetime/dist/vue-datetime.css'
 
+import VCharts from 'v-charts'
+
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -34,6 +36,7 @@ Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(FullCalendar)
 Vue.use(Datetime)
+Vue.use(VCharts)
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyBfUwZZLyoHnHjmywdCtEMNaxyXI8IU2ew',

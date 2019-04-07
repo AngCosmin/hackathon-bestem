@@ -46,6 +46,12 @@ let routes = [
         name: 'profile',
     },
     {
+        path: '/event/:id',
+        component: loadView('Event'),
+        meta: { requiresAuth: true },
+        name: 'event',
+    },
+    {
         path: '/friends',
         component: loadView('Friends'),
         meta: { requiresAuth: true },
