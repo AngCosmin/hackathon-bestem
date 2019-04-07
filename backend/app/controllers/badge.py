@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.badges import Badges
+from app.models.users import Users
 from app.models.events import Events
 from app.models.users_badges import Users_Badges
 
@@ -54,3 +55,34 @@ def get_user_badges():
         })
 
     return jsonify({'success': True, 'message': result}), 200
+
+def assign_badge(user_id):
+    user = Users.get(user_id)
+    places_reported = user.places_reported
+    places_cleaned = user.places_cleaned
+    badge = None
+
+    if places_cleaned == 1:
+        badge = Badges.get(id=1)
+    elif places_cleaned == 2:
+        badge = Badges.get(id=4)
+    elif places_cleaned == 5:
+        badge = Badges.get(id=5)
+    elif places_cleaned == 10:
+        badge = Badges.get(id=6)
+
+    if badge is not None:
+        Users_Badges.create(user=user_id, badge=badge.id)
+
+    if places_reported == 1:
+        badge = Badges.get(id=3)
+    elif places_reported == 2:
+        badge = Badges.get(id=7)
+    elif places_reported == 3:
+        badge = Badges.get(id=8)
+    elif places_reported == 5:
+        badge = Badges.get(id=9)
+    Users_Badges.create(user=user_id, badge=badge.id)
+
+    if badge is not None:
+        Users_Badges.create(user=user_id, badge=badge.id)
