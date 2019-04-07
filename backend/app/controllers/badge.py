@@ -56,9 +56,9 @@ def get_user_badges():
 
     return jsonify({'success': True, 'message': result}), 200
 
-def assign_badge(user_id):
+
+def assign_badge_clean(user_id):
     user = Users.get(user_id)
-    places_reported = user.places_reported
     places_cleaned = user.places_cleaned
     badge = None
 
@@ -73,6 +73,13 @@ def assign_badge(user_id):
 
     if badge is not None:
         Users_Badges.create(user=user_id, badge=badge.id)
+        user.points += badge.points
+
+
+def assign_badge_reported(user_id):
+    user = Users.get(user_id)
+    places_reported = user.places_reported
+    badge = None
 
     if places_reported == 1:
         badge = Badges.get(id=3)
@@ -86,3 +93,4 @@ def assign_badge(user_id):
 
     if badge is not None:
         Users_Badges.create(user=user_id, badge=badge.id)
+        user.points += badge.points

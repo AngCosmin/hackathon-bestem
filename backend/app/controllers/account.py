@@ -1,7 +1,10 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from operator import itemgetter
+
+from app.models.events import Events
 from app.models.users import Users
+from app.models.users_events import Users_Events
 from app.models.users_friends import Users_Friends
 
 blueprint = Blueprint('account', __name__, url_prefix='/account')
@@ -33,15 +36,39 @@ def index():
 @jwt_required
 def friends():
     current_user_id = get_jwt_identity()
+    vals = {}
     friends = []
+    suggestions = []
     for val in Users_Friends.select().where(Users_Friends.user == current_user_id):
         user = Users.get_or_none(Users.id == val.friend)
         friends.append({
+            'id': user.id,
             'name': user.name,
             'avatar': user.avatar
         })
 
-    return jsonify({'success': True, 'message': friends}), 200
+    for user_event in Users_Events.select().where(Users_Events.user == current_user_id):
+        user_events_new = Users_Events.select().where(Users_Events.event == user_event.event)
+        for val in user_events_new:
+            user = Users.get_or_none(Users.id== val.user)
+            if user.id is not current_user_id:
+                suggestions.append({
+                    'id': user.id,
+                    'name': user.name,
+                    'avatar': user.avatar
+                })
+
+    for i in friends:
+        try:
+            suggestions.remove(i)
+        except ValueError:
+            pass
+    result = {
+        'friends': friends,
+        'suggestions': suggestions
+    }
+
+    return jsonify({'success': True, 'message': result}), 200
 
 
 @blueprint.route('/leaderboard', methods=['GET'])
@@ -64,9 +91,9 @@ def leaderboard():
 @blueprint.route('/follow', methods=['POST'])
 @jwt_required
 def follow():
-    friend_id = request.form[0]
+    friend_id = request.form['user_id']
     user_id = get_jwt_identity()
 
     Users_Friends.create(user=user_id, friend=friend_id)
 
-    return jsonify({'success': True, 'message': 'follow'}), 200
+    return jsonify({'success': True}), 200
