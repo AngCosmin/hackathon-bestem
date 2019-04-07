@@ -21,8 +21,10 @@ def index():
         'nr_friends': 0
     }
 
-    no_friends = len(Users_Friends.select().where(Users_Friends.friend == current_user_id))
-    details_dict['nr_friends'] = no_friends
+    friends = Users_Friends.select().where(Users_Friends.user == current_user_id)
+
+    for _ in friends:
+        details_dict['nr_friends'] += 1
 
     return jsonify({'success': True, 'message': details_dict}), 200
 
@@ -57,6 +59,7 @@ def leaderboard():
     newboard = sorted(board, key=itemgetter('points'), reverse=True)
 
     return jsonify({'success': True, 'message': newboard}), 200
+
 
 @blueprint.route('/follow', methods=['POST'])
 @jwt_required

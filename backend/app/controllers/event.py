@@ -6,6 +6,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.events import Events
 import dateutil.parser
 
+from app.models.pictures import Pictures
+from app.models.pins import Pins
 from app.models.users import Users
 from app.models.users_events import Users_Events
 
@@ -51,18 +53,23 @@ def all():
 def going():
     user_id = get_jwt_identity()
     event_id = request.form['event_id']
+
+    tmp = Users_Events.get_or_none(Users_Events.user == user_id and Users_Events.event == event_id)
+
+    if tmp is not None:
+        return jsonify({'success': False, 'message': 'Already going'}), 200
+
     Users_Events.create(user=user_id, event=event_id)
     return jsonify({'success': True, 'message': 'Created successfully'}), 200
 
 
-@blueprint.route('/get', methods=['POST'])
+@blueprint.route('/get', methods=['GET'])
 @jwt_required
 def get():
-    user_id = get_jwt_identity()
-    event_id = request.form['event_id']
+    event_id = request.args['event_id']
     event = Events.get_or_none(Events.id == event_id)
 
-    users_events = Users_Events.select().where(event == event_id)
+    users_events = Users_Events.select().where(Users_Events.event == event_id)
     users_list = []
     for aux in users_events:
         user = Users.get_or_none(Users.id == aux.user)
@@ -73,12 +80,20 @@ def get():
         }
         users_list.append(dict)
 
+    photos = []
+    pin = Pins.get_or_none(Pins.id == event.pin)
+    pictures = Pictures.select().where(Pictures.pin == pin.id)
+
+    for picture in pictures:
+        photos.append(picture.url)
+
     result = {
         'title': event.title,
         'description': event.description,
         'time_start': event.time_start,
         'time_end': event.time_end,
-        'users': users_list
+        'users': users_list,
+        'photos': photos,
     }
 
     return jsonify({'success': True, 'message': result}), 200

@@ -14,7 +14,7 @@
 		<b-card bg-variant="white" text-variant="dark" title="Badges" class="mb-3">
 			<div v-if="badges.length === 0">You have no badges</div>
 			<div v-else>
-				<b-card-text v-for="badge in badges" :key="badge.icon" class="text-left">
+				<b-card-text v-for="badge in badges" :key="badge.icon">
 					<img :src="badge.icon" width="48px" @click="showDetails(badge)">
 					{{ badge.name }}
 				</b-card-text>
@@ -51,13 +51,12 @@ export default {
 			badges: [],
 			selectedBadge: null,
 			chartData: {
-				columns: ['date', 'cost'],
+				columns: ['date', 'Cleaned spots', 'Reported spots'],
 				rows: [
-					{ 'cost': 5, 'date': '01/01' },
-					{ 'cost': 8, 'date': '01/03' },
-					{ 'cost': 3, 'date': '01/04' },
-					{ 'cost': 10, 'date': '01/05' },
-					{ 'cost': 12, 'date': '01/06' }
+					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '01/01' },
+					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '02/01' },
+					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '03/01' },
+					{ 'Cleaned spots': 1, 'Reported spots': 5, 'date': '04/01' },
 				]
 			}
 		}

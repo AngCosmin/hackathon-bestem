@@ -44,11 +44,7 @@ def send_mail():
     event = Events.get_or_none(Events.id == event_id)
 
     message = "@" + user.name + " has invited you to take part in a recycling event : " + event.title + ".<br> <br>"
-<<<<<<< Updated upstream
     message = message + '<strong>Note:</strong> This invitation was intended for <strong><a href="mailto:{}" target="_blank">{}</a></strong>.<br>'.format(email_to, email_to)
-=======
-    message = message + '<strong>Note:</strong> This invitation was intended for <strong><a href="mailto:{}" target="_blank"></a></strong>.<br>'.format(email_to)
->>>>>>> Stashed changes
     message = message + '<strong>Event Page:</strong> <strong><a href="https://google.com" style="color:#4183c4;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://github.com/settings/blocked_users?block_user%3DAngCosmin&amp;source=gmail&amp;ust=1554664209321000&amp;usg=AFQjCNFhcEiyGnWd5Kt311X8KnYc0aRuqg">Click here</a>'
     email_body = """\
 <p class="m_-1403629251686063965email-body-subtext" style="color:#333;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:20px;margin:15px 0 5px;padding:0;text-align:left;word-wrap:normal" align="left">
@@ -70,25 +66,29 @@ def send_mail_helper(email_to, message):
 
 
 @blueprint.route('/pending_users', methods=['GET'])
+@jwt_required
 def pending_users():
+    current_user_id = get_jwt_identity()
     users = Users.select().where(Users.status == 0)
     board = []
+
     for user in users:
-        board.append({
-            'id': user.id,
-            'name': user.name,
-            'avatar': user.avatar,
-        })
+        if user.id != current_user_id:
+            board.append({
+                'id': user.id,
+                'name': user.name,
+                'avatar': user.avatar,
+            })
 
     return jsonify({'success': True, 'message': board}), 200
 
 
 @blueprint.route('/pending_pins', methods=['GET'])
+@jwt_required
 def pending_pins():
     pins = Pins.select().where(Pins.status == 1)
     result = []
     for pin in pins:
-
         dict = {
             'id': pin.id,
             'title': pin.title,
@@ -116,7 +116,7 @@ def approve_user_profile():
 @blueprint.route('/approve_pin_cleaned', methods=['POST'])
 def approve_pin_cleaned():
     pin_id = request.form['pin_id']
-    query = Pins.update(status=1).where(Pins.id == pin_id)
+    query = Pins.update(status=2).where(Pins.id == pin_id)
     query.execute()
 
     user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)

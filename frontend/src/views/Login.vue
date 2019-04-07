@@ -7,7 +7,7 @@
 		</b-form-group>
 
 		<b-form-group label="Password">
-			<b-form-input type="password" v-model="password" required placeholder="Email"/>
+			<b-form-input type="password" v-model="password" required placeholder="Password"/>
 		</b-form-group>
 
 		<b-button @click="onLoginPressed" variant="primary" block>Login</b-button>

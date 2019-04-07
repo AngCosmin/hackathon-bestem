@@ -33,6 +33,10 @@
 				<div v-if="invitationSuccess === true" class="text-success">Invitation sent!</div>
 				<div v-else-if="invitationSuccess === false" class="text-danger">Email not found!</div>
 				
+				<div v-if="goingSuccess === true" class="text-success">You are now going!</div>
+				<div v-else-if="goingSuccess === false" class="text-danger">Already going</div>
+				
+
 				<b-button class="mt-3" variant="primary" block @click="goToEvent(eventDetails.id)">View</b-button>
 				<b-button class="mt-3" variant="primary" block @click="onGoingPressed(eventDetails.id)">Going</b-button>
 			</div>
@@ -48,16 +52,12 @@ import 'fullcalendar/dist/fullcalendar.css'
 import { setTimeout } from 'timers';
 
 export default {
-	computed: {
-		...mapGetters("auth", {
-			getEmail: "getEmail"
-		})
-	},
 	data() {
 		return {
 			friendEmail: '',
 			selectedEventId: null,
 			invitationSuccess: null,
+			goingSuccess: null,
 			events: [],
 			config: {
 				defaultView: 'month',
@@ -110,6 +110,28 @@ export default {
 		},
 		goToEvent(id) {
 			this.$router.push({ name: 'event', params: { id: id } })
+		},
+		onGoingPressed(id) {
+			let formData = new FormData()
+			formData.append('event_id', this.selectedEventId)
+
+			axios.post('/event/going', formData).then(response => {
+				let success = response.data.success
+
+				if (success === true) {
+					this.goingSuccess = true
+				}
+				else {
+					this.goingSuccess = false
+				}
+
+				setTimeout(() => {
+					this.goingSuccess = null
+				}, 3000)
+				
+			}).catch((error) => {
+				console.log(error)
+			})
 		}
 	}
 }

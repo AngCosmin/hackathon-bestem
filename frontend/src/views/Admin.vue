@@ -14,7 +14,7 @@
 				<td><b-img :src="user.avatar" rounded="circle" width="64px"></b-img>
 				<td>{{ user.name }}</td>
 				<td>
-					<b-button size="sm" variant="success">Approve</b-button>
+					<b-button size="sm" variant="success" @click="onApproveUserPressed(user.id)">Approve</b-button>
 				</td>
 			</tr>
 		</table>
@@ -32,7 +32,7 @@
 				<td>{{ pin.title }}</td>
 				<td>{{ pin.description }}</td>
 				<td>
-					<b-button size="sm" variant="success">Approve</b-button>
+					<b-button size="sm" variant="success" @click="onApprovePinPressed(pin.id)">Approve</b-button>
 				</td>
 			</tr>
 		</table>
@@ -54,7 +54,7 @@ export default {
 	},
 	created() {
 		this.getPendingUsers()
-		this.getPendingPosts()
+		this.getPendingPins()
 	},
 	methods: {
 		getPendingUsers() {
@@ -62,11 +62,25 @@ export default {
 				this.pendingUsers = response.data.message
 			})
 		},
-		getPendingPosts() {
+		getPendingPins() {
 			axios.get('/utils/pending_pins').then(response => {
 				this.pendingPins = response.data.message
 			})
-		}
+		}, 
+		onApproveUserPressed(id) {
+			let formData = new FormData()
+			formData.append('user_id', id)
+			axios.post('/utils/approve_user_profile', formData).then(response => {
+				this.getPendingUsers()
+			})
+		},
+		onApprovePinPressed(id) {
+			let formData = new FormData()
+			formData.append('pin_id', id)
+			axios.post('/utils/approve_pin_cleaned', formData).then(response => {
+				this.getPendingPins()
+			})
+		},
 	}
 }
 </script>
