@@ -97,17 +97,15 @@ export default {
 			formData.append('email_to', this.friendEmail)
 			formData.append('event_id', this.selectedEventId)
 
-			this.invitationSuccess = false
-			setTimeout(() => {
-				this.invitationSuccess = null
-			}, 3000)
-
-			// axios.post('', formData).then(response => {
-			// 	console.log(response)
-				
-			// }).catch(() => {
-
-			// })
+			axios.post('/utils/send_mail', formData).then(response => {
+				this.friendEmail = ''
+				this.invitationSuccess = true
+				setTimeout(() => {
+					this.invitationSuccess = null
+				}, 3000)
+			}).catch((error) => {
+				console.log(error)
+			})
 		}
 	}
 }

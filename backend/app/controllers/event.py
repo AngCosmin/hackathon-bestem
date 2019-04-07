@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 
 from app.models.events import Events
+import dateutil.parser
 from app.models.pins import Pins
 
 blueprint = Blueprint('event', __name__, url_prefix='/event')
@@ -13,8 +14,8 @@ blueprint = Blueprint('event', __name__, url_prefix='/event')
 @jwt_required
 def create():
     pin_id = request.form['pin_id']
-    time_start = datetime.strptime(request.form['time_start'], '%Y-%m-%d %H:%M:%S.%f')
-    time_end = datetime.strptime(request.form['time_end'], '%Y-%m-%d %H:%M:%S.%f')
+    time_start = dateutil.parser.parse(request.form['time_start'])
+    time_end = dateutil.parser.parse(request.form['time_end'])
     description = request.form['description']
     title = request.form['title']
 
