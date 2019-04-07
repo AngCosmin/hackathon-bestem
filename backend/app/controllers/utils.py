@@ -2,7 +2,6 @@ from email.mime.text import MIMEText
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from InstagramAPI import InstagramAPI
 
 from app.models.events import Events
 from app.models.users import Users
@@ -62,11 +61,3 @@ def send_mail_helper(email_to, message):
 
     server.sendmail('app.bestem@gmail.com', email_to, message)
     server.quit()
-
-def post_picture(url, caption):
-    InstagramAPI = InstagramAPI("app.bestem", "parolaapp")
-    InstagramAPI.login()  # login
-
-    photo_path = url
-    caption = caption
-    InstagramAPI.uploadPhoto(photo_path, caption=caption)

@@ -18,6 +18,9 @@
 			  <router-link :to="{ name: 'calendar' }">Calendar</router-link>
 			</b-nav-item>
 			<b-nav-item v-if="isAuth">
+			  <router-link :to="{ name: 'leaderboard' }">Leaderboard</router-link>
+			</b-nav-item>
+			<b-nav-item v-if="isAuth">
 			  <router-link :to="{ name: 'profile' }">Profile</router-link>
 			</b-nav-item>
 			<b-nav-item v-if="!isAuth">

@@ -82,7 +82,6 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from '@/services/api.service'
-import router from "@/router";
 
 export default {
 	computed: {
@@ -153,7 +152,7 @@ export default {
 						}
 						else if (pin.status === 1) {
 							// Cleaned
-							url = 'https://i.imgur.com/7HGc2iB.png'
+							url = 'https://i.imgur.com/VYHoMg7.png'
 						}
 
 						this.mapForCleaningPins.push({

@@ -45,6 +45,18 @@ let routes = [
         meta: { requiresAuth: true },
         name: 'profile',
     },
+    {
+        path: '/friends',
+        component: loadView('Friends'),
+        meta: { requiresAuth: true },
+        name: 'friends',
+    },
+    {
+        path: '/leaderboard',
+        component: loadView('Leaderboard'),
+        meta: { requiresAuth: true },
+        name: 'leaderboard',
+    },
 ]
 
 const router = new Router({

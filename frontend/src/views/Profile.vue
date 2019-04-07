@@ -7,7 +7,7 @@
 		<b-button-group size="md" class="mb-3">
 			<b-button variant="outline-success">Cleaned spots<br>{{ cleaned }}</b-button>
 			<b-button variant="outline-success">Points<br>{{ points }}</b-button>
-			<b-button variant="outline-success">Friends<br>{{ noFriends }}</b-button>
+			<b-button variant="outline-success" @click="goToFriends">Friends<br>{{ noFriends }}</b-button>
 			<b-button variant="outline-success">Reported spots<br>{{ reported }}</b-button>
 		</b-button-group>
 		<div></div>
@@ -77,6 +77,9 @@ export default {
 			if (this.$refs['modal-details']) {
 				this.$refs['modal-details'].show()
 			} 
+		},
+		goToFriends() {
+			this.$router.push("/friends")
 		}
 	}
 }
