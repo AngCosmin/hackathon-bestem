@@ -9,14 +9,7 @@
 			better future for our planet!
 		</p>
 
-		<b-carousel
-			id="carousel-fade"
-			style="text-shadow: 0px 0px 2px #000"
-			fade
-			indicators
-			img-width="1024"
-			img-height="480"
-		>
+		<b-carousel style="text-shadow: 0px 0px 2px #000" fade indicators img-width="1024" img-height="480" class="mb-3">
 			<b-carousel-slide
 			caption="Mark the polutted places form your town!"
 			img-src="https://i.imgur.com/NEUnh7o.jpg"
@@ -30,6 +23,8 @@
 			img-src="https://i.imgur.com/vSEvTRl.jpg"
 			></b-carousel-slide>
 		</b-carousel>
+		
+		<ve-bar :data="chartData" :settings="chartSettings"></ve-bar>
 	</div>
 </template>
 
@@ -39,14 +34,19 @@ import axios from '@/services/api.service'
 import router from "@/router";
 
 export default {
-	computed: {
-		...mapGetters("auth", {
-			getEmail: "getEmail"
-		})
-	},
 	data() {
 		return {
-			
+			chartSettings: {
+				stack: {
+					'xxx': ['Very satisfied', 'Rather satisfied']
+				}
+			},
+			chartData: {
+				columns: ['city', 'Very satisfied', 'Rather satisfied'],
+				rows: [
+					{ 'city': 'Luxembourg', 'Very satisfied': 50, 'Rather satisfied': 45 },
+				]
+			}
 		}
 	},
 	watch: {

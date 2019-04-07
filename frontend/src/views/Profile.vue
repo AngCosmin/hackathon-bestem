@@ -10,10 +10,6 @@
 			<b-button variant="outline-success" @click="goToFriends">Friends<br>{{ noFriends }}</b-button>
 			<b-button variant="outline-success">Reported spots<br>{{ reported }}</b-button>
 		</b-button-group>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
 
 		<b-card bg-variant="white" text-variant="dark" title="Badges">
 			<b-card-text v-for="badge in badges" :key="badge.icon" class="text-left">
