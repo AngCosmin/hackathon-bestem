@@ -4,8 +4,12 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.events import Events
+from app.models.pictures import Pictures
+from app.models.pins import Pins
 from app.models.users import Users
 import smtplib
+
+from InstagramAPI import InstagramAPI
 
 blueprint = Blueprint('utils', __name__, url_prefix='/utils')
 
@@ -61,3 +65,50 @@ def send_mail_helper(email_to, message):
 
     server.sendmail('app.bestem@gmail.com', email_to, message)
     server.quit()
+
+
+@blueprint.route('/upload_photo', methods=['GET'])
+def upload_photo():
+    username = 'app.bestem@gmail.com'
+    password = 'parolaapp'
+    api = InstagramAPI(username, password)
+    api.login()  # login
+
+    photo_path = '/home/mihaela/Desktop/6GBwkgK - Imgur.png'
+    caption = "Sample photo"
+    api.uploadPhoto(photo=photo_path, caption=caption)
+    return ''
+
+
+@blueprint.route('/pending_users', methods=['GET'])
+def pending_users():
+    users = Users.select().where(Users.status == 0)
+    board = []
+    for user in users:
+        board.append({
+            'name': user.name,
+            'avatar': user.avatar,
+        })
+
+    return jsonify({'success': True, 'message': board}), 200
+
+
+@blueprint.route('/pending_pins', methods=['GET'])
+def pending_pins():
+    pins = Pins.select().where(Pins.status == 1)
+    result = []
+    for pin in pins:
+
+        dict = {
+            'title': pin.title,
+            'description': pin.description,
+            'pictures': []
+        }
+
+        pictures = Pictures.select().where(Pictures.pin == pin.id)
+        for picture in pictures:
+            dict['pictures'].append(picture.url)
+        result.append(dict)
+
+    return jsonify({'success': True, 'message': result}), 200
+
