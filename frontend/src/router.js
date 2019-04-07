@@ -57,6 +57,12 @@ let routes = [
         meta: { requiresAuth: true },
         name: 'leaderboard',
     },
+    {
+        path: '/admin',
+        component: loadView('Admin'),
+        meta: { requiresAuth: true },
+        name: 'admin',
+    },
 ]
 
 const router = new Router({

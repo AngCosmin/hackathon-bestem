@@ -17,7 +17,7 @@ def login():
 
     if user:
         access_token = create_access_token(identity=user.id)
-        return jsonify({'success': True, 'token': access_token}), 200
+        return jsonify({'success': True, 'token': access_token, 'role': user.role_id}), 200
 
     return jsonify({'success': False, 'message': 'Bad username or password'}), 401
 

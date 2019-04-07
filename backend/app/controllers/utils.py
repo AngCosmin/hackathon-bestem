@@ -9,8 +9,6 @@ from app.models.pins import Pins
 from app.models.users import Users
 import smtplib
 
-from InstagramAPI import InstagramAPI
-
 blueprint = Blueprint('utils', __name__, url_prefix='/utils')
 
 
@@ -67,25 +65,13 @@ def send_mail_helper(email_to, message):
     server.quit()
 
 
-@blueprint.route('/upload_photo', methods=['GET'])
-def upload_photo():
-    username = 'app.bestem@gmail.com'
-    password = 'parolaapp'
-    api = InstagramAPI(username, password)
-    api.login()  # login
-
-    photo_path = '/home/mihaela/Desktop/6GBwkgK - Imgur.png'
-    caption = "Sample photo"
-    api.uploadPhoto(photo=photo_path, caption=caption)
-    return ''
-
-
 @blueprint.route('/pending_users', methods=['GET'])
 def pending_users():
     users = Users.select().where(Users.status == 0)
     board = []
     for user in users:
         board.append({
+            'id': user.id,
             'name': user.name,
             'avatar': user.avatar,
         })
@@ -100,6 +86,7 @@ def pending_pins():
     for pin in pins:
 
         dict = {
+            'id': pin.id,
             'title': pin.title,
             'description': pin.description,
             'pictures': []

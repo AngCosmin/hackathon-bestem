@@ -35,6 +35,27 @@
 			</div>
 		</b-modal>
 
+		<b-modal ref="modal-create-event" hide-footer title="Create event">
+			<div class="d-block text-center">
+				<div class="form-group">
+					<input v-model="newEvent.title" type="text" class="form-control" placeholder="Title">
+				</div>
+				<div class="form-group">
+					<textarea v-model="newEvent.description" class="form-control" placeholder="Description"></textarea>
+				</div>
+
+				<div class="form-group">
+					<datetime v-model="newEvent.startDate" type="datetime" placeholder="Start date" input-class="form-control"></datetime>
+				</div>
+
+				<div class="form-group">
+					<datetime v-model="newEvent.endDate" type="datetime" placeholder="End date" input-class="form-control"></datetime>
+				</div>
+
+				<b-button type="submit" variant="primary" @click="onCreateEventConfirmPressed">Confirm</b-button>
+			</div>
+		</b-modal>
+
 		<b-modal ref="modal-details" hide-footer :title="pinDetails.title">
 			<div class="d-block text-center">
 				<span v-html="pinDetails.description"></span>
@@ -52,7 +73,7 @@
 				</b-carousel>
 
 				<template v-if="pinDetails.type === 1">
-					<b-button class="mt-3" variant="primary" block>Create event</b-button>
+					<b-button class="mt-3" variant="primary" block @click="onCreateEventPressed">Create event</b-button>
 					<b-button v-if="pinDetails.status === 0" class="mt-3" variant="primary" block @click="onMarkAsCleanedPressed">Mark as cleaned</b-button>
 					<span v-else-if="pinDetails.status === 1" class="text-warning"><hr>Already cleaned</span>
 				</template>
@@ -112,6 +133,12 @@ export default {
 					description: '',
 					photo: null,
 				}
+			},
+			newEvent: {
+				title: '',
+				description: '',
+				startDate: null,
+				endDate: null,
 			},
 			pinDetails: {
 				type: '',
@@ -233,6 +260,27 @@ export default {
 				console.error(error);
 			})
 		},
+		onCreateEventPressed() {
+			this.$refs['modal-details'].hide()
+			this.$refs['modal-create-event'].show()
+		},
+		onCreateEventConfirmPressed() {
+			let formData = new FormData()
+			formData.append('title', this.newEvent.title)
+			formData.append('description', this.newEvent.description)
+			formData.append('time_start', this.newEvent.startDate)
+			formData.append('time_end', this.newEvent.endDate)
+			formData.append('pin_id', this.selectedPinId)
+
+			axios.post("/event/create", formData).then(response => {
+				this.getPins()
+				this.resetNewPinData()
+
+				this.$refs['modal-create-event'].hide()
+			}).catch(error => {
+				console.error(error);
+			})
+		},
 		onSaveNewSpot() {
 			let formData = new FormData()
 			formData.append('title', this.newPin.form.title)
@@ -289,12 +337,32 @@ export default {
 				email: '',
 				status: 0,
 			}
+		},
+		resetNewEventData() {
+			this.newEvent = {
+				title: '',
+				description: '',
+				startDate: null,
+				endDate: null,
+			}
 		}
 	}
 }
 </script>
 
 <style>
+.vdatetime-popup__header {
+	background: #27ae60 !important;
+}
+
+.vdatetime-calendar__month__day--selected > span > span {
+	background: #27ae60 !important;	
+}
+
+.vdatetime-popup__actions__button, .vdatetime-time-picker__item--selected {
+	color: #27ae60 !important;	
+}
+
 .bubbly-button {
   position: fixed !important;
   bottom: 25px;

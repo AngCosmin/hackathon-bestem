@@ -23,6 +23,9 @@
 			<b-nav-item v-if="isAuth">
 			  <router-link :to="{ name: 'profile' }">Profile</router-link>
 			</b-nav-item>
+			<b-nav-item v-if="isAuth && isAdmin">
+			  <router-link :to="{ name: 'admin' }">Admin</router-link>
+			</b-nav-item>
 			<b-nav-item v-if="!isAuth">
 			  <router-link :to="{ name: 'login' }">Login</router-link>
 			</b-nav-item>
@@ -50,7 +53,8 @@ export default {
 	name: "app",
 	computed: {
 		...mapGetters("auth", {
-			isAuth: "isAuthenticated"
+			isAuth: "isAuthenticated",
+			isAdmin: 'isAdmin'
 		})
 	},
 	created() {
