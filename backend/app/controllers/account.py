@@ -33,7 +33,7 @@ def friends():
     current_user_id = get_jwt_identity()
     friends = []
     for val in Users_Friends.select().where(Users_Friends.user == current_user_id):
-        user = Users.get_or_none(Users.id == val.user)
+        user = Users.get_or_none(Users.id == val.friend)
         friends.append({
             'name': user.name,
             'avatar': user.avatar

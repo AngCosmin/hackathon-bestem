@@ -35,6 +35,19 @@
 			</div>
 		</b-modal>
 
+		<b-modal ref="modal-create-event" hide-footer title="Create event">
+			<div class="d-block text-center">
+				<div class="form-group">
+					<input v-model="newEvent.title" type="text" class="form-control" placeholder="Title">
+				</div>
+				<div class="form-group">
+					<textarea v-model="newEvent.description" class="form-control" placeholder="Description"></textarea>
+				</div>
+
+				<b-button type="submit" variant="primary" @click="onCreateEventConfirmPressed">Confirm</b-button>
+			</div>
+		</b-modal>
+
 		<b-modal ref="modal-details" hide-footer :title="pinDetails.title">
 			<div class="d-block text-center">
 				<span v-html="pinDetails.description"></span>
@@ -52,7 +65,7 @@
 				</b-carousel>
 
 				<template v-if="pinDetails.type === 1">
-					<b-button class="mt-3" variant="primary" block>Create event</b-button>
+					<b-button class="mt-3" variant="primary" block @click="onCreateEventPressed">Create event</b-button>
 					<b-button v-if="pinDetails.status === 0" class="mt-3" variant="primary" block @click="onMarkAsCleanedPressed">Mark as cleaned</b-button>
 					<span v-else-if="pinDetails.status === 1" class="text-warning"><hr>Already cleaned</span>
 				</template>
@@ -112,6 +125,10 @@ export default {
 					description: '',
 					photo: null,
 				}
+			},
+			newEvent: {
+				title: '',
+				description: '',
 			},
 			pinDetails: {
 				type: '',
@@ -232,6 +249,13 @@ export default {
 			}).catch(error => {
 				console.error(error);
 			})
+		},
+		onCreateEventPressed() {
+			this.$refs['modal-details'].hide()
+			this.$refs['modal-create-event'].show()
+		},
+		onCreateEventConfirmPressed() {
+
 		},
 		onSaveNewSpot() {
 			let formData = new FormData()
