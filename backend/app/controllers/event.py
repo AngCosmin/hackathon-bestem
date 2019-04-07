@@ -9,6 +9,7 @@ import dateutil.parser
 from app.models.users import Users
 from app.models.users_events import Users_Events
 
+
 blueprint = Blueprint('event', __name__, url_prefix='/event')
 
 
