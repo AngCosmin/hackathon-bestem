@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app.controllers.badge import assign_badge_clean
 from app.models.events import Events
 from app.models.pictures import Pictures
 from app.models.pins import Pins
@@ -10,11 +11,6 @@ from app.models.users import Users
 import smtplib
 
 blueprint = Blueprint('utils', __name__, url_prefix='/utils')
-
-
-def verify_if_user_should_receive_a_badge(user_id):
-    return
-
 
 @blueprint.route('/get_emails', methods=['GET'])
 @jwt_required
@@ -120,6 +116,7 @@ def approve_pin_cleaned():
     query = Users.update(points=user.points + 20, places_cleaned=user.places_cleaned+1)
     query.execute()
 
+    assign_badge_clean(user.id)
 
     return jsonify({'success': True, 'message': 'Successfully approved!'}), 200
 

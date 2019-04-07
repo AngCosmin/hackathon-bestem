@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from imgurpython import ImgurClient
 
-from app.controllers.utils import verify_if_user_should_receive_a_badge
+from app.controllers.badge import assign_badge_reported
 from app.models.pictures import Pictures
 from app.models.pins import Pins
 from app.models.users import Users
@@ -44,7 +44,7 @@ def create():
     query = Users.update(places_reported=(user.places_reported + 1)).where(Users.id == user_id)
     query.execute()
 
-    verify_if_user_should_receive_a_badge(user_id)
+    assign_badge_reported(user.id)
 
     return jsonify({'success': True, 'message': 'Your pin was created'}), 200
 
@@ -55,7 +55,7 @@ def details():
     id = request.args['pin_id']
 
     pin = Pins.get_or_none(Pins.id == id)
-    #user
+    # user
     if pin.type == 1:
         mydict = {
             'title': pin.title,
@@ -88,7 +88,6 @@ def details():
     return jsonify({'success': True, 'message': mydict}), 200
 
 
-
 @blueprint.route('/my_pins', methods=['GET'])
 @jwt_required
 def my_pins():
@@ -100,7 +99,6 @@ def my_pins():
         my_pins.append(pin.created_at)
 
     return jsonify({'success': True, 'message': my_pins}), 200
-
 
 
 @blueprint.route('/all', methods=['GET'])
@@ -140,8 +138,4 @@ def mark_clean():
         image = imgur_client.upload_from_path(filename)
         Pictures.create(url=image['link'], pin=pin_id)
 
-
     return jsonify({'success': True, 'message': 'Your pin was updated'}), 200
-
-
-
