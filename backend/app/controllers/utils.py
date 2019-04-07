@@ -1,3 +1,4 @@
+from datetime import datetime
 from email.mime.text import MIMEText
 
 from flask import Blueprint, request, jsonify
@@ -30,7 +31,7 @@ def get_emails():
 
 
 @blueprint.route('/send_mail', methods=['GET'])
-# @jwt_required
+@jwt_required
 def send_mail():
     current_user_id = get_jwt_identity()
     user = Users.get_or_none(Users.id == current_user_id)
@@ -112,7 +113,7 @@ def approve_user_profile():
 @blueprint.route('/approve_pin_cleaned', methods=['POST'])
 def approve_pin_cleaned():
     pin_id = request.form['pin_id']
-    query = Pins.update(status=2).where(Pins.id == pin_id)
+    query = Pins.update(status=1, cleaned_at=datetime.now).where(Pins.id == pin_id)
     query.execute()
 
     user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)

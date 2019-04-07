@@ -59,6 +59,7 @@ def going():
         return jsonify({'success': False, 'message': 'Already going'}), 200
 
     Users_Events.create(user=user_id, event=event_id)
+    Users.get(id=user_id).points += 10
     return jsonify({'success': True, 'message': 'Created successfully'}), 200
 
 

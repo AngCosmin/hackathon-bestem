@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from operator import itemgetter
+from datetime import datetime, timedelta
 
 from app.models.events import Events
+from app.models.pins import Pins
 from app.models.users import Users
 from app.models.users_events import Users_Events
 from app.models.users_friends import Users_Friends
@@ -97,3 +99,34 @@ def follow():
     Users_Friends.create(user=user_id, friend=friend_id)
 
     return jsonify({'success': True}), 200
+
+
+@blueprint.route('/statistics', methods=['GET'])
+@jwt_required
+def pins_from_day():
+    current_user_id = get_jwt_identity()
+    mylist = []
+    pins = Pins.select().where(Pins.user == current_user_id)
+    users_events = Users_Events.select().where(Users_Events.user == current_user_id)
+    events = []
+    for tmp in users_events:
+        events.append(Events.get(Events.id == tmp.event))
+
+    for i in range(7):
+        day_reported_pins = 0
+        day_cleaned_pins = 0
+        date_N_days_ago = datetime.now() - timedelta(days=i)
+        for pin in pins:
+            if pin.created_at.day == date_N_days_ago.day:
+                day_reported_pins += 1
+
+        for event in events:
+            if event.time_start.day == date_N_days_ago.day:
+                day_cleaned_pins += 1
+        mylist.append({
+            'Cleaned spots': day_cleaned_pins,
+            'Reported spots': day_reported_pins,
+            'Date': date_N_days_ago
+        })
+
+    return jsonify({'success': True, 'message': mylist}), 200
