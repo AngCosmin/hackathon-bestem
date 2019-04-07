@@ -5,3 +5,4 @@ from . import account
 from . import pin
 from . import event
 from . import utils
+from . import badge

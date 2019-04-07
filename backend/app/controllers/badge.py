@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.badges import Badges
 from app.models.events import Events
@@ -29,8 +29,28 @@ def invite():
 def all():
     allEvents = []
     for event in Events.select():
-        dict = {'title': event.title, 'description': event.description, 'start': event.time_start, 'end': event.time_end}
+        dict = {'title': event.title, 'description': event.description, 'start': event.time_start,
+                'end': event.time_end}
         allEvents.append(dict)
 
     return jsonify({'success': True, 'message': allEvents}), 200
 
+
+@blueprint.route('/get-user-badges', methods=['GET'])
+@jwt_required
+def get_user_badges():
+    user_id = get_jwt_identity()
+    result = []
+
+    badges = Users_Badges.select().where(Users_Badges.user == user_id)
+
+    for badge_id in badges:
+        badge = Badges.get(Badges.id == badge_id.badge)
+        result.append({
+            'name': badge.name,
+            'description': badge.description,
+            'icon': badge.icon,
+            'points': badge.points
+        })
+
+    return jsonify({'success': True, 'message': result}), 200

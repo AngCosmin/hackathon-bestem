@@ -24,5 +24,6 @@ def create_app():
     app.register_blueprint(controllers.pin.blueprint)
     app.register_blueprint(controllers.event.blueprint)
     app.register_blueprint(controllers.utils.blueprint)
+    app.register_blueprint(controllers.badge.blueprint)
 
     return app

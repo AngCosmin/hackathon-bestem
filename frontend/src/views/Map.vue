@@ -223,10 +223,10 @@ export default {
 			formData.append('file', this.markAsCleaned.photo)
 			formData.append('pin_id', this.selectedPinId)
 
-			axios.post("/pin/mark_cleaned", formData, { 
+			axios.post("/pin/mark_as_clean", formData, { 
 				headers: { 
 					'Content-Type': 'multipart/form-data',
-					'Authorization': 'Bearer 123'
+					'Authorization': `Bearer ${localStorage.getItem('token')}`
 				}
 			}).then(response => {
 				this.$refs['modal-mark-as-cleaned'].hide()
@@ -245,7 +245,7 @@ export default {
 			axios.post("/pin/create", formData, { 
 				headers: { 
 					'Content-Type': 'multipart/form-data',
-					'Authorization': 'Bearer 123'
+					'Authorization': `Bearer ${localStorage.getItem('token')}`
 				}
 			}).then(response => {
 				this.getPins()

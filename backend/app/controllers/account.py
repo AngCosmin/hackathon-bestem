@@ -7,7 +7,7 @@ from app.models.users_friends import Users_Friends
 blueprint = Blueprint('account', __name__, url_prefix='/account')
 
 
-@blueprint.route('/', methods=['GET'])
+@blueprint.route('/details', methods=['GET'])
 @jwt_required
 def index():
     current_user_id = get_jwt_identity()
