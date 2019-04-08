@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<img src="../assets/img/logo.png" class="mt-5 mb-3 w-100">
+		<img src="../assets/img/logo.png" class="mt-5 mb-3" width="300px">
 
 		<b-form-group label="Email address">
 			<b-form-input type="email" v-model="email" required placeholder="Email"/>

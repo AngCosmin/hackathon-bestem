@@ -73,7 +73,10 @@ def assign_badge_clean(user_id):
 
     if badge is not None:
         Users_Badges.create(user=user_id, badge=badge.id)
-        user.points += badge.points
+
+        points = Users.get(Users.id==user_id).points + badge.points
+        query = Users.update(points=points).where(Users.id == user_id)
+        query.execute()
 
 
 def assign_badge_reported(user_id):
@@ -93,4 +96,7 @@ def assign_badge_reported(user_id):
 
     if badge is not None:
         Users_Badges.create(user=user_id, badge=badge.id)
-        user.points += badge.points
+
+        points = Users.get(Users.id==user_id).points + badge.points
+        query = Users.update(points=points).where(Users.id == user_id)
+        query.execute()

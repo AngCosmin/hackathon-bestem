@@ -52,8 +52,7 @@ export default {
 			selectedBadge: null,
 			chartData: {
 				columns: ['Date', 'Reported spots', 'Cleaned spots'],
-				rows: [
-				]
+				rows: []
 			}
 		}
 	},
@@ -78,6 +77,8 @@ export default {
 
 		axios.get('/account/statistics').then(response => {
 			this.chartData.rows = response.data.message
+			this.chartData.rows[5]['Cleaned spots'] = this.cleaned
+			this.chartData.rows[5]['Reported spots'] = this.reported
 		})
 	},
 	methods: {

@@ -1,6 +1,6 @@
 <template>
   	<div class="container">
-		<h5 v-if="friends !== null && friends.length === 0">
+		<h5 v-if="friends !== null && friends.length === 0" class="mt-3">
 			You are not following someone :(
 			<img src="http://www.reactiongifs.com/r/sbbn.gif" class="mt-5 w-100">
 		</h5>

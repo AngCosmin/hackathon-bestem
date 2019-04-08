@@ -11,7 +11,6 @@ from app.models.pins import Pins
 from app.models.users import Users
 from app.models.users_events import Users_Events
 
-
 blueprint = Blueprint('event', __name__, url_prefix='/event')
 
 
@@ -59,7 +58,10 @@ def going():
         return jsonify({'success': False, 'message': 'Already going'}), 200
 
     Users_Events.create(user=user_id, event=event_id)
-    Users.get(id=user_id).points += 10
+
+    points = Users.get(id=user_id).points + 10
+    query = Users.update(points=points).where(Users.id == user_id)
+    query.execute()
     return jsonify({'success': True, 'message': 'Created successfully'}), 200
 
 
@@ -103,9 +105,9 @@ def get():
 @jwt_required
 def my_events():
     user_id = get_jwt_identity()
-    users_events = Users_Events.select().where(user=user_id)
+    users_events = Users_Events.select().where(Users_Events.user == user_id)
 
-    my_events =[]
+    my_events = []
     for user_event in users_events:
         event = Events.get(Events.id == user_event.event)
         dict = {

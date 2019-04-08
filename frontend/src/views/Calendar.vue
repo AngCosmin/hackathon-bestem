@@ -2,10 +2,11 @@
   	<div class="container-fluid">
 		<div class="upcomming-events">
 			<h5>Upcomming event</h5>
-			<div class="event">
-				<div class="title">Clean</div>
+			<div v-if="myEvents.length === 0" class="title">There is no upcomming events</div>
+			<div v-for="event in myEvents" :key="event.title" class="event">
+				<div class="title">{{ event.title }}</div>
 				<div class="time">
-					2019-04-08 12:00 - 2019-04-08 18:00
+					{{ event.time_start }} - {{ event.time_end }}
 				</div>
 			</div>
 		</div>
@@ -38,7 +39,7 @@
 				
 
 				<b-button class="mt-3" variant="primary" block @click="goToEvent(eventDetails.id)">View</b-button>
-				<b-button class="mt-3" variant="primary" block @click="onGoingPressed(eventDetails.id)">Going</b-button>
+				<b-button v-if="showGoingButton && !eventsToGo.includes(eventDetails.id)" class="mt-3" variant="primary" block @click="onGoingPressed(eventDetails.id)">Going</b-button>
 			</div>
 		</b-modal>
 	</div>
@@ -54,6 +55,7 @@ import { setTimeout } from 'timers';
 export default {
 	data() {
 		return {
+			myEvents: [],
 			friendEmail: '',
 			selectedEventId: null,
 			invitationSuccess: null,
@@ -69,16 +71,20 @@ export default {
 				description: null,
 				start: '',
 				end: '',
-			}
+			},
+			showGoingButton: true,
+			eventsToGo: [],
 		}
 	},
 	watch: {
 	},
 	created() {
 		this.getEvents()
+		this.getMyEvents()
 	},
 	methods: {
 		eventSelected(e) {
+			this.showGoingButton = true
 			this.$refs['modal-event-details'].show()
 			this.eventDetails.id = e.id
 			this.eventDetails.title = e.title
@@ -91,6 +97,11 @@ export default {
 		getEvents() {
 			axios.get('event/all').then(response => {
 				this.events = response.data.message
+			})
+		},
+		getMyEvents() {
+			axios.get('event/my_events').then(response => {
+				this.myEvents = response.data.message
 			})
 		},
 		onInvitePressed() {
@@ -115,11 +126,15 @@ export default {
 			let formData = new FormData()
 			formData.append('event_id', this.selectedEventId)
 
+			this.showGoingButton = false
+
 			axios.post('/event/going', formData).then(response => {
 				let success = response.data.success
 
 				if (success === true) {
 					this.goingSuccess = true
+					this.getMyEvents()
+					this.eventsToGo.push(id)
 				}
 				else {
 					this.goingSuccess = false

@@ -30,7 +30,7 @@ def get_emails():
     return jsonify({'success': True, 'message': result}), 200
 
 
-@blueprint.route('/send_mail', methods=['GET'])
+@blueprint.route('/send_mail', methods=['POST'])
 @jwt_required
 def send_mail():
     current_user_id = get_jwt_identity()
@@ -112,12 +112,12 @@ def approve_user_profile():
 
 @blueprint.route('/approve_pin_cleaned', methods=['POST'])
 def approve_pin_cleaned():
-    pin_id = request.form['pin_id']
-    query = Pins.update(status=1, cleaned_at=datetime.now).where(Pins.id == pin_id)
+    pin_id = int(request.form['pin_id'])
+    query = Pins.update(status=2).where(Pins.id == pin_id)
     query.execute()
-
     user = Users.get_or_none(Users.id == Pins.get(Pins.id == pin_id).user)
-    query = Users.update(points=user.points + 20, places_cleaned=(user.places_cleaned+1))
+    var = (user.points + 20)
+    query = Users.update(points=var, places_cleaned=(user.places_cleaned+1))
     query.execute()
 
     assign_badge_clean(user.id)
